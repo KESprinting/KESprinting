@@ -11,7 +11,7 @@
     <script type="text/javascript">
        (function(){
           emailjs.init("4GEApFep8eyBYe_wO"); 
-       })();
+       })();/*  */
     </script>
 
     <style>
@@ -735,17 +735,10 @@
                     <label style="font-size: 0.75rem; font-weight: bold; text-transform: uppercase; color: #666;">Payment Details</label>
                     <input type="text" id="cardName" placeholder="Cardholder Name" required>
                     
-                    <div class="input-with-icon">
-                        <input type="text" id="cardNumber" placeholder="Card Number (16 Digits)" maxlength="16" required>
-                        <img src="https://cdn-icons-png.flaticon.com/512/633/633611.png" class="field-icon" alt="card-icon">
-                    </div>
-
-                    <div style="display: flex; gap: 10px;">
-                        <input type="text" id="cardExp" placeholder="MM/YY" maxlength="5" required>
-                        <div class="input-with-icon">
-                            <input type="text" id="cardCvc" placeholder="CVC" maxlength="3" required>
-                            <img src="https://cdn-icons-png.flaticon.com/512/570/570227.png" class="field-icon" style="width: 20px;" alt="help">
-                        </div>
+                    <div style="background: #fff9c4; padding: 15px; border-radius: 8px; border: 1px solid #fbc02d; margin-bottom: 15px; text-align: center;">
+                        <p style="font-size: 0.85rem; color: #333; font-weight: 600;">
+                            🛡️ You will be redirected to PayFast's secure server to complete your payment.
+                        </p>
                     </div>
                     
                     <div id="paymentErrorMessage" style="color: red; font-size: 0.8rem; margin-bottom: 10px; display: none;"></div>
@@ -1601,35 +1594,15 @@ function triggerForgotPassword() {
             const address = document.getElementById('custAddress').value || "Pickup";
             const errBox = document.getElementById('paymentErrorMessage');
             
-            const cardNum = document.getElementById('cardNumber').value.replace(/\s+/g, '');
-            const cardExp = document.getElementById('cardExp').value;
-            const cardCvc = document.getElementById('cardCvc').value;
+            // SECURITY UPDATE: These are no longer required for frontend logic since we use secure redirect
+            // const cardNum = document.getElementById('cardNumber').value.replace(/\s+/g, '');
 
             errBox.style.display = 'none';
-
-            // 1. SECURITY CHECK: Luhn Algorithm Validation
-            if (cardNum.length < 13 || cardNum.length > 19 || !isValidCard(cardNum)) {
-                errBox.innerText = "Security Alert: Invalid Card Number. Please check the digits.";
-                errBox.style.display = 'block';
-                return;
-            }
-
-            // 2. SIMULATED BALANCE CHECK: 
-            const simulatedDeclined = cardNum.endsWith('00') || cardNum.endsWith('99');
 
             btn.innerText = "Authorizing Transaction...";
             btn.disabled = true;
 
             setTimeout(() => {
-                if (simulatedDeclined) {
-                    btn.disabled = false;
-                    btn.innerText = "Confirm & Pay Now";
-                    errBox.innerText = "TRANSACTION DECLINED: Your card has insufficient funds. Please use another card.";
-                    errBox.style.display = 'block';
-                    alert("Card Declined: Please use a card with sufficient balance to complete this order.");
-                    return;
-                }
-
                 // --- INJECTED REAL PAYFAST REDIRECT LOGIC ---
                 const orderID = generateOrderID();
                 const totalAmount = parseFloat(totalText.replace('R', ''));
@@ -1660,7 +1633,7 @@ function triggerForgotPassword() {
 
                 const pfData = {
                     merchant_id: "34605963",
-                    merchant_key: "5o8ttjlxvvyvs", // Ensure this is your correct key
+                    merchant_key: "5o8ttjlxvvyvs", 
                     amount: totalAmount.toFixed(2),
                     item_name: "KES Printing Order " + orderID,
                     m_payment_id: orderID,
