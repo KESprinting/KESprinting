@@ -1,0 +1,2246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KES Printing | Professional Solutions</title>
+    
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script type="text/javascript">
+       (function(){
+          emailjs.init("4GEApFep8eyBYe_wO"); 
+       })();
+    </script>
+
+    <style>
+        /* =========================================
+           CUSTOMER STYLES (ORIGINAL)
+           ========================================= */
+        :root {
+            --kes-cyan: #00aeef;
+            --kes-magenta: #ec008c;
+            --kes-yellow: #fff200;
+            --kes-black: #231f20;
+            --primary-color: #1a1a1b; 
+            --light-gray: #f4f4f4;
+            --white: #ffffff;
+            --transition: all 0.2s ease;
+            --success: #28a745; 
+            --bg: #f0f2f5;      
+        }
+
+        .no-copy { user-select: none; -webkit-user-drag: none; pointer-events: none; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, sans-serif; }
+        
+        #customer-view { background-color: var(--light-gray); color: var(--kes-black); min-height: 100vh; }
+
+        .kes-text { font-weight: 900; letter-spacing: -1px; }
+        .k-blue { color: var(--kes-cyan); cursor: pointer; } 
+        .e-pink { color: var(--kes-magenta); }
+        .s-yellow { color: var(--kes-yellow); }
+
+        /* PROFESSIONAL GATE KEEPER */
+        #gate-keeper {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--kes-black); z-index: 9999; display: flex; align-items: center; justify-content: center;
+        }
+
+        .auth-card {
+            background: white; padding: 30px; border-radius: 12px; width: 380px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5); border-bottom: 5px solid var(--kes-cyan);
+        }
+
+        .auth-tabs { display: flex; margin-bottom: 20px; border-bottom: 1px solid #eee; }
+        .tab { flex: 1; padding: 10px; cursor: pointer; text-align: center; font-weight: bold; color: #999; transition: 0.3s; }
+        .tab.active { color: var(--kes-cyan); border-bottom: 3px solid var(--kes-cyan); }
+
+        header {
+            background: var(--primary-color); color: white;
+            padding: 0.8rem 5%; display: flex; justify-content: space-between;
+            align-items: center; position: sticky; top: 0; z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        .logo-box { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+        .logo-img { width: 40px; height: 40px; object-fit: contain; }
+        .user-welcome { font-size: 0.8rem; color: var(--kes-yellow); margin-right: 15px; }
+
+        .cart-btn { 
+            background: var(--kes-cyan); border: none; color: white; padding: 8px 20px; 
+            border-radius: 5px; cursor: pointer; font-weight: bold; display: flex; align-items: center; gap: 8px;
+        }
+
+        .tracking-section { background: var(--kes-black); padding: 15px 5%; display: flex; justify-content: center; border-top: 1px solid #333; }
+        .track-nav-btn { 
+            background: var(--kes-magenta); color: white; border: none; padding: 12px 30px; 
+            border-radius: 50px; cursor: pointer; font-weight: 800; font-size: 0.95rem;
+            display: flex; align-items: center; gap: 12px; transition: 0.3s;
+            box-shadow: 0 4px 15px rgba(236, 0, 140, 0.4); text-transform: uppercase;
+        }
+        .track-nav-btn:hover { background: #ff0095; transform: scale(1.05); }
+
+        /* UPDATED: POPUP ANIMATION CYCLING THROUGH 3 KES LOGO COLORS */
+        .track-nav-btn.status-popup { animation: pulse3Color 2s infinite; }
+        @keyframes pulse3Color {
+            0% { transform: scale(1); background-color: var(--kes-cyan); box-shadow: 0 0 10px var(--kes-cyan); }
+            33% { transform: scale(1.08); background-color: var(--kes-magenta); box-shadow: 0 0 20px var(--kes-magenta); }
+            66% { transform: scale(1.08); background-color: var(--kes-yellow); color: var(--kes-black); box-shadow: 0 0 20px var(--kes-yellow); }
+            100% { transform: scale(1); background-color: var(--kes-cyan); box-shadow: 0 0 10px var(--kes-cyan); }
+        }
+
+        .hero { background: var(--kes-black); padding: 30px; text-align: center; color: white; border-bottom: 4px solid var(--kes-cyan); }
+        .container { max-width: 1200px; margin: 20px auto; padding: 0 20px; }
+        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
+
+        .custom-design { background: white; padding: 25px; border-radius: 12px; margin-top: 40px; border: 2px dashed var(--kes-cyan); }
+        .custom-design label { font-size: 0.75rem; font-weight: bold; color: #666; margin-top: 10px; display: block; }
+        .upload-btn-wrapper { position: relative; overflow: hidden; display: inline-block; width: 100%; margin: 10px 0; }
+        .upload-btn { border: 2px solid #ddd; color: #777; background-color: white; padding: 12px; border-radius: 8px; font-weight: bold; width: 100%; cursor: pointer; }
+        .upload-btn-wrapper input[type=file] { font-size: 100px; position: absolute; left: 0; top: 0; opacity: 0; }
+
+        /* =========================================
+           KES GALLERY LAYOUT
+           ========================================= */
+        .gallery { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); 
+            gap: 12px; 
+            margin-top: 20px; 
+        }
+        @media (min-width: 1024px) {
+            .gallery { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 20px; }
+        }
+
+        .gallery-item { 
+            position: relative; 
+            overflow: hidden; 
+            border-radius: 8px; 
+            background: #fff; 
+            aspect-ratio: 1 / 1; 
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+            border: 1px solid #eee;
+        }
+        .gallery-item:hover { transform: translateY(-5px); }
+        .gallery-item img, .gallery-item video { width: 100%; height: 100%; object-fit: cover; }
+
+        /* VIEW MODAL (LIGHTBOX) */
+        #gallery-viewer {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.95); z-index: 6000; align-items: center; justify-content: center;
+        }
+        .viewer-content { max-width: 90%; max-height: 80vh; border: 3px solid white; border-radius: 10px; overflow: hidden; }
+        .viewer-content img, .viewer-content video { width: 100%; height: auto; display: block; }
+        .close-viewer { position: absolute; top: 20px; right: 30px; color: white; font-size: 40px; cursor: pointer; font-weight: bold; }
+
+        .product-card { background: white; border-radius: 8px; overflow: hidden; transition: var(--transition); cursor: pointer; border: 1px solid #eee; text-align: center; padding-bottom: 15px;}
+        .product-card:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); border-color: var(--kes-cyan); }
+        .product-image { width: 100%; height: 180px; object-fit: cover; background: #f9f9f9;}
+        .product-info { padding: 12px; }
+        .product-price { color: #B12704; font-weight: bold; margin: 5px 0; font-size: 1.1rem;}
+
+        .detail-card-img { width: 100%; border-radius: 10px; margin-bottom: 15px; border: 1px solid #eee;}
+        .detail-title { font-size: 1.4rem; font-weight: 800; color: var(--kes-black); margin-bottom: 5px;}
+        .detail-desc { font-size: 0.9rem; color: #555; line-height: 1.6; margin-bottom: 15px;}
+        .detail-price { font-size: 1.3rem; color: var(--kes-magenta); font-weight: bold; margin-bottom: 20px; display: block;}
+
+        #cart-sidebar {
+            position: fixed; right: -400px; top: 0; width: 380px; height: 100%;
+            background: white; z-index: 4000; padding: 25px; transition: 0.3s ease;
+            box-shadow: -5px 0 20px rgba(0,0,0,0.2); display: flex; flex-direction: column;
+        }
+        #cart-sidebar.active { right: 0; }
+
+        .fulfillment-options { display: flex; gap: 10px; margin: 15px 0; background: #f0f0f0; padding: 5px; border-radius: 5px; }
+        .option-btn { flex: 1; padding: 8px; border: none; border-radius: 4px; cursor: pointer; font-size: 0.8rem; font-weight: bold; }
+        .option-btn.active { background: var(--kes-cyan); color: white; }
+
+        .modal {
+            display: none; position: fixed; top:0; left:0; width:100%; height:100%;
+            background: rgba(0,0,0,0.8); z-index: 5000; align-items: center; justify-content: center;
+        }
+        .modal-content { background: white; padding: 30px; border-radius: 12px; width: 450px; position: relative; max-height: 90vh; overflow-y: auto; }
+
+        input, select, textarea { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 6px; }
+        
+        /* UPDATED: CARD PAYMENT DESIGN */
+        .card-brands { display: flex; gap: 8px; margin-bottom: 15px; justify-content: center; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+        .card-brands img { height: 25px; filter: grayscale(0.2); opacity: 0.9; }
+        .input-with-icon { position: relative; width: 100%; }
+        .input-with-icon input { padding-right: 45px; }
+        .input-with-icon .field-icon { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); width: 25px; opacity: 0.4; }
+
+        .primary-btn { 
+            width: 100%; padding: 12px; border: none; border-radius: 6px; 
+            font-weight: bold; cursor: pointer; transition: 0.2s;
+            background: var(--kes-yellow); color: var(--kes-black);
+        }
+        .primary-btn:hover { background: #e6da00; }
+
+        .cart-item { display: flex; gap: 12px; margin-bottom: 15px; align-items: center; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+        .cart-item img { width: 50px; height: 50px; border-radius: 4px; object-fit: cover; }
+
+        footer { background: var(--primary-color); color: #777; text-align: center; padding: 30px; margin-top: 50px; }
+
+        /* =========================================
+           ADMIN STYLES (ORIGINAL)
+           ========================================= */
+        #admin-view { background-color: var(--bg); color: #333; min-height: 100vh; display: none; }
+
+        #notification-ping {
+            position: fixed; top: 20px; right: 20px; background: var(--success);
+            color: white; padding: 15px 25px; border-radius: 10px; display: none;
+            z-index: 10000; box-shadow: 0 5px 15px rgba(0,0,0,0.2); animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
+
+        .sidebar { 
+            width: 260px; background: var(--kes-black); color: white; 
+            padding: 25px; height: 100vh; position: fixed; 
+            box-shadow: 4px 0 10px rgba(0,0,0,0.2); z-index: 1000;
+        }
+        .sidebar h2 { font-size: 1.4rem; margin-bottom: 30px; border-bottom: 2px solid var(--kes-magenta); padding-bottom: 10px; text-align: center; }
+
+        .nav-item { 
+            padding: 15px; cursor: pointer; border-radius: 8px; 
+            transition: 0.3s; display: flex; align-items: center; gap: 12px; margin-bottom: 10px; 
+        }
+        .nav-item:hover { background: rgba(255,255,255,0.1); }
+        .nav-item.active { background: var(--kes-cyan); color: white; font-weight: bold; }
+
+        .main-admin { margin-left: 260px; padding: 30px; width: calc(100% - 260px); min-height: 100vh; transition: 0.3s; }
+
+        .stats-bar { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 25px; }
+        .stat-card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border-top: 4px solid var(--kes-cyan); }
+        .stat-card h4 { font-size: 0.8rem; color: #666; text-transform: uppercase; }
+        .stat-card p { font-size: 1.4rem; font-weight: 800; margin-top: 8px; }
+
+        .card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 8px 16px rgba(0,0,0,0.08); margin-bottom: 25px; }
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 15px; }
+        
+        .upload-area { grid-column: 1 / -1; background: #f9f9f9; border: 2px dashed #ccc; padding: 15px; border-radius: 8px; text-align: center; cursor: pointer; }
+
+        .btn-action { 
+            background: var(--kes-magenta); color: white; border: none; 
+            padding: 16px; border-radius: 8px; font-weight: bold; cursor: pointer; 
+            transition: 0.2s; width: 100%; font-size: 1rem;
+        }
+
+        .status-btn { padding: 8px 15px; border-radius: 6px; border: none; color: white; font-weight: bold; cursor: pointer; text-transform: uppercase; font-size: 0.75rem; min-width: 130px; }
+        .status-processing { background: #fd7e14; }
+        .status-printing { background: var(--kes-cyan); }
+        .status-ready { background: var(--success); }
+        .status-out { background: var(--kes-magenta); }
+        /* NEW STATUS COLORS */
+        .status-waiting { background: #6c757d; }
+        .status-delivery { background: #007bff; }
+        .status-completed { background: #231f20; }
+
+        .table-container { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; background: white; border-radius: 8px; }
+        table { width: 100%; border-collapse: collapse; min-width: 1000px; }
+        th { background: #f8f9fa; padding: 15px; text-align: left; font-size: 0.8rem; color: #666; }
+        td { padding: 15px; border-bottom: 1px solid #eee; font-size: 0.9rem; }
+
+        .customer-info-small { font-size: 0.8rem; color: #666; line-height: 1.4; }
+
+        #delivery-map { height: 400px; width: 100%; border-radius: 12px; margin-top: 20px; border: 2px solid var(--kes-cyan); }
+
+        /* INJECTED: Sample Image Styling */
+        .sample-preview { width: 100%; border-radius: 8px; margin-top: 10px; border: 1px solid #ddd; }
+        .order-img-thumb { width: 60px; height: 60px; border-radius: 5px; object-fit: cover; border: 1px solid #eee; }
+
+        @media (max-width: 768px) {
+            .sidebar { width: 100%; height: 70px; bottom: 0; top: auto; left: 0; display: flex; flex-direction: row; padding: 0; justify-content: space-around; border-radius: 20px 20px 0 0; }
+            .sidebar h2 { display: none; }
+            .nav-item { margin: 0; flex: 1; border-radius: 0; justify-content: center; flex-direction: column; font-size: 0.7rem; gap: 5px; }
+            .main-admin { margin-left: 0; padding: 15px; padding-bottom: 100px; width: 100%; }
+            /* Mobile flex for KFC columns if needed in future */
+            .stats-bar { grid-template-columns: 1fr 1fr; }
+        }
+
+        #pro-admin-modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85); z-index: 10001; align-items: center; justify-content: center;
+        }
+        .pro-auth-card {
+            background: white; padding: 30px; border-radius: 15px; width: 350px; text-align: center;
+            border-top: 5px solid var(--kes-cyan);
+        }
+
+        /* INJECTED: CUSTOMER NOTIFICATION STYLES */
+        .cust-notif-ping {
+            background: var(--success); color: white; border: none; padding: 12px; border-radius: 8px; 
+            font-weight: 800; text-transform: uppercase; margin-bottom: 10px; animation: slideIn 0.5s ease;
+        }
+        .order-btn-waiting { border: 2px solid var(--success) !important; color: var(--success) !important; background: #e8f5e9 !important; font-weight: 900 !important; }
+
+        /* =========================================
+           NEW COUNTDOWN TIMER STYLES (ADDED)
+           ========================================= */
+        .countdown-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .timer-circle {
+            position: relative;
+            width: 160px;
+            height: 160px;
+            border: 8px solid #ddd; /* Dynamic Color */
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            background: white;
+            transition: border-color 0.3s ease;
+        }
+
+        .timer-display {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: -5px;
+            text-align: center;
+        }
+
+        .timer-label {
+            font-size: 0.7rem;
+            color: #888;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .timer-instruction {
+            margin-top: 15px;
+            font-size: 0.8rem;
+            color: #666;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        /* =========================================
+           NEW: ADMIN MINI TIMER STYLES
+           ========================================= */
+        .admin-timer-mini {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #f9f9f9;
+            padding: 5px 10px;
+            border-radius: 20px;
+            border: 1px solid #eee;
+            width: fit-content;
+        }
+        .mini-circle {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: 3px solid var(--kes-cyan);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.5rem;
+            background: white;
+        }
+        .mini-time-text {
+            font-size: 0.75rem;
+            font-weight: 800;
+            color: #333;
+        }
+
+        /* =========================================
+           INJECTED: NEW ADMIN PREVIEW STYLES
+           ========================================= */
+        #adminPreviewGallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+            padding: 10px;
+            background: #fff;
+            border-radius: 8px;
+            border: 1px solid #eee;
+        }
+        .admin-prev-item {
+            position: relative;
+            aspect-ratio: 1/1;
+            border-radius: 4px;
+            overflow: hidden;
+            border: 1px solid #ddd;
+        }
+        .admin-prev-item img, .admin-prev-item video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* =========================================
+           INJECTED: CUSTOMER PRODUCT SLIDER STYLES
+           ========================================= */
+        .preview-slider-container {
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        .main-preview-img {
+            width: 100%;
+            height: 300px;
+            object-fit: contain;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            background: #f9f9f9;
+            transition: 0.3s;
+        }
+        .thumbnail-gallery {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding: 10px 0;
+            scrollbar-width: thin;
+        }
+        .thumb-item {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 4px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: 0.2s;
+            flex-shrink: 0;
+            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .thumb-item:hover { transform: scale(1.05); }
+        .thumb-item.active { border-color: var(--kes-cyan); }
+        /* =========================================
+   PROFESSIONAL NOTIFICATION OVERRIDE
+   ========================================= */
+#kes-notification-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 15000;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    pointer-events: none;
+}
+
+.kes-toast {
+    pointer-events: auto;
+    min-width: 300px;
+    max-width: 400px;
+    background: white;
+    color: var(--kes-black);
+    padding: 16px 20px;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    border-left: 6px solid var(--kes-cyan);
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    animation: kesSlideIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+.kes-toast.success { border-left-color: #28a745; }
+.kes-toast.error { border-left-color: #dc3545; }
+.kes-toast.warning { border-left-color: var(--kes-yellow); }
+
+.kes-toast-content { flex: 1; }
+.kes-toast-title { font-weight: 800; font-size: 0.9rem; text-transform: uppercase; margin-bottom: 2px; }
+.kes-toast-msg { font-size: 0.85rem; color: #555; line-height: 1.4; }
+
+.kes-toast-close {
+    cursor: pointer;
+    font-size: 20px;
+    color: #ccc;
+    transition: 0.2s;
+}
+.kes-toast-close:hover { color: var(--kes-magenta); }
+
+@keyframes kesSlideIn {
+    from { transform: translateX(120%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes kesFadeOut {
+    from { transform: translateX(0); opacity: 1; }
+    to { transform: translateX(100%); opacity: 0; }
+}
+/* =========================================
+   KES PROFESSIONAL NOTIFICATION SYSTEM
+   ========================================= */
+#kes-custom-alert-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.85); z-index: 20000;
+    display: none; align-items: center; justify-content: center;
+    backdrop-filter: blur(5px);
+}
+
+.kes-alert-card {
+    background: white; width: 90%; max-width: 400px;
+    border-radius: 15px; overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    animation: kesPop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    border-top: 5px solid var(--kes-cyan);
+}
+
+.kes-alert-body { padding: 30px; text-align: center; }
+.kes-alert-icon { font-size: 3rem; margin-bottom: 15px; display: block; }
+.kes-alert-msg { font-size: 1rem; color: #333; font-weight: 600; line-height: 1.5; }
+
+/* Input field for Prompts (Passwords/Names) */
+#kes-alert-input {
+    width: 100%; padding: 12px; margin-top: 15px;
+    border: 2px solid #eee; border-radius: 8px;
+    font-size: 1rem; text-align: center; outline: none;
+}
+#kes-alert-input:focus { border-color: var(--kes-cyan); }
+
+.kes-alert-footer {
+    display: flex; background: #f9f9f9; padding: 15px; gap: 10px;
+}
+
+.kes-alert-btn {
+    flex: 1; padding: 12px; border: none; border-radius: 8px;
+    font-weight: bold; cursor: pointer; transition: 0.2s;
+}
+.kes-btn-primary { background: var(--kes-cyan); color: white; }
+.kes-btn-secondary { background: #ddd; color: #333; }
+
+@keyframes kesPop {
+    from { transform: scale(0.8); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+    </style>
+</head>
+<body oncontextmenu="return false;">
+
+    <div id="gate-keeper">
+        <div class="auth-card">
+            <center><img src="KESoooo.jpg" alt="Logo" style="width: 70px; margin-bottom: 15px;"></center>
+            <div class="auth-tabs">
+                <div class="tab active" id="signup-tab" onclick="toggleAuthTab('signup')">Sign Up</div>
+                <div class="tab" id="login-tab" onclick="toggleAuthTab('login')">Login</div>
+            </div>
+            
+            <div id="verify-step" style="display:none; text-align: center;">
+                <p style="font-size: 0.85rem; color: #555; margin-bottom: 15px;">Enter the 6-digit code sent to your email to verify your identity.</p>
+                <input type="text" id="verificationCodeInput" placeholder="000000" style="text-align: center; font-size: 1.5rem; font-weight: bold; letter-spacing: 5px; color: var(--kes-cyan);">
+                <button onclick="confirmVerification()" class="primary-btn" style="background: var(--success); color: white;">Verify & Setup Password</button>
+            </div>
+
+            <form id="authForm" onsubmit="handleAuth(event)">
+    <div id="nameField">
+        <input type="text" id="userNameInput" placeholder="Full Name">
+    </div>
+
+    <input type="email" id="userEmail" placeholder="Email Address" required>
+
+    <div id="passwordField" style="display:none;">
+        <input type="password" id="userPass" placeholder="Password">
+        <p onclick="triggerForgotPassword()" style="color: var(--kes-cyan); font-size: 0.8rem; text-align: right; cursor: pointer; margin-top: -5px; font-weight: 600;">Forgot Password?</p>
+    </div>
+
+    <button type="submit" class="primary-btn" id="authSubmitBtn" style="background: var(--kes-cyan); color: white; margin-top: 15px;">Get Verification Code</button>
+</form>
+
+        </div>
+    </div>
+
+    <div id="pro-admin-modal">
+        <div class="pro-auth-card">
+            <h3 style="margin-bottom: 10px; color: var(--kes-black);">Security Check</h3>
+            <p style="font-size: 0.85rem; color: #666; margin-bottom: 15px;">Please enter the Admin Password to proceed.</p>
+            <input type="password" id="adminPassInput" placeholder="Password" style="text-align: center; font-size: 1.1rem; letter-spacing: 3px;">
+            <div style="display: flex; gap: 10px; margin-top: 10px;">
+                <button onclick="closeProModal()" class="primary-btn" style="background: #eee; color: #333;">Cancel</button>
+                <button onclick="verifyAdminPass()" class="primary-btn" style="background: var(--kes-cyan); color: white;">Authorize</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="customer-view" style="display: none;">
+        <header>
+            <a href="#" class="logo-box">
+                <img src="KESoooo.jpg" alt="Logo" class="logo-img">
+                <span class="kes-text">
+                    <span class="k-blue">K</span><span class="e-pink">E</span><span class="s-yellow">S</span> 
+                    <span style="color:var(--kes-cyan); font-size: 0.9rem; margin-left: 5px;">PRINTING</span>
+                </span>
+            </a>
+            <div style="display: flex; align-items: center;">
+                <span class="user-welcome" id="displayUserName">Welcome, User</span>
+                <button class="cart-btn" onclick="toggleCart()">
+                    🛒 <span id="cart-count">0</span>
+                </button>
+                <button onclick="logout()" style="background: none; border: none; color: #ff4d4d; margin-left: 15px; cursor: pointer; font-size: 0.7rem;">Logout</button>
+            </div>
+        </header>
+
+        <div class="tracking-section">
+            <button class="track-nav-btn" id="mainTrackBtn" onclick="openTrackLookup()">
+                🔍 Track My Live Order
+            </button>
+        </div>
+
+        <section class="hero">
+            <h1 style="font-size: 1.4rem;">High-Definition Digital Printing</h1>
+            <p style="font-size: 0.8rem; color: var(--kes-cyan);">Professional Media Solutions for South Africa</p>
+        </section>
+
+        <div class="container">
+            <h2 style="margin-bottom: 15px; font-size: 1.1rem; border-left: 4px solid var(--kes-magenta); padding-left: 10px;">Order Products</h2>
+            <div class="product-grid" id="product-list"></div>
+
+            <div class="custom-design">
+                <h2 style="font-size: 1.2rem; color: var(--kes-magenta);">Request Custom Design</h2>
+                <p style="font-size: 0.8rem; margin-bottom: 15px; color: #666;">Build your custom print from scratch and add it to your order.</p>
+                
+                <label>What are we printing on?</label>
+                <input type="text" id="customProdType" placeholder="e.g. White Hoodie, Black T-Shirt, Cap, Banner...">
+
+                <label>Describe how you want it to look:</label>
+                <textarea id="designRequest" placeholder="Explain colors, positioning, and any text you want included..."></textarea>
+                
+                <label>Upload the Image to be Printed:</label>
+                <div class="upload-btn-wrapper">
+                    <button class="upload-btn" id="fileLabelCustom">📎 Choose Image File</button>
+                    <input type="file" id="designFile" accept="image/*" onchange="previewCustomImage(this)">
+                </div>
+                <div id="customPreviewBox" style="display:none; margin-top: 10px;">
+                   <p style="font-size: 0.7rem; color: var(--success); font-weight: bold;">Image selected successfully!</p>
+                </div>
+
+                <button class="primary-btn" style="background: var(--kes-magenta); color: white; margin-top: 15px;" onclick="addCustomRequestToCart()">Confirm & Add to Cart</button>
+            </div>
+
+            <div style="margin-top: 40px;">
+                <h2 style="font-size: 1.1rem; border-left: 4px solid var(--kes-cyan); padding-left: 10px;">KES Professional Gallery (Protected)</h2>
+                <div class="gallery" id="public-gallery">
+                    </div>
+            </div>
+        </div>
+
+        <div id="gallery-viewer" onclick="closeGalleryViewer()">
+            <span class="close-viewer">&times;</span>
+            <div class="viewer-content" id="viewer-box" onclick="event.stopPropagation()">
+            </div>
+        </div>
+
+        <div id="trackLookupModal" class="modal">
+            <div class="modal-content" style="text-align: center;">
+                <span style="float:right; cursor:pointer;" onclick="closeTrackLookup()">&times;</span>
+                <h2 style="color: var(--kes-magenta); margin-bottom: 15px;">Your Recent Orders</h2>
+                <p style="font-size: 0.85rem; color: #666; margin-bottom: 15px;"> We've detected your active orders. Click to track progress.</p>
+                <div id="customer-notif-area"></div>
+                <div id="recentOrdersList" style="display: flex; flex-direction: column; gap: 10px;">
+                    </div>
+            </div>
+        </div>
+
+        <div id="personalizeModal" class="modal">
+            <div class="modal-content">
+                <span style="float:right; cursor:pointer; font-size: 24px;" onclick="closePersonalize()">&times;</span>
+                <h2 style="color: var(--kes-magenta); margin-bottom: 10px;">Design Your Order</h2>
+                <p style="font-size: 0.8rem; margin-bottom: 15px;">Choose how you want to provide your design details.</p>
+                
+                <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                    <button id="optUpload" class="option-btn active" onclick="setDesignMode('upload')">Upload File</button>
+                    <button id="optVision" class="option-btn" onclick="setDesignMode('vision')">Describe Vision</button>
+                </div>
+
+                <div id="uploadMode">
+                    <label style="font-size: 0.8rem; font-weight: bold;">Upload Reference Logo/Image:</label>
+                    <input type="file" id="custPrintRef" accept="image/*">
+                </div>
+
+                <div id="visionMode" style="display:none;">
+                    <label style="font-size: 0.8rem; font-weight: bold;">Text to Print:</label>
+                    <textarea id="custPrintText" placeholder="e.g. Name: Bashir, Title: CEO, Phone: 071..."></textarea>
+                    
+                    <label style="font-size: 0.8rem; font-weight: bold;">Color & Style Instructions:</label>
+                    <textarea id="custPrintColors" placeholder="e.g. Background color: Blue, Text: White, Font: Bold..."></textarea>
+                </div>
+                
+                <hr style="margin: 15px 0; border: 0.5px solid #eee;">
+                
+                <div style="display: flex; flex-direction: column; gap: 10px;">
+                    <button class="primary-btn" style="background: var(--kes-cyan); color: white;" onclick="finalizeAddToCart()">Confirm Design & Add</button>
+                    <button class="primary-btn" style="background: var(--kes-magenta); color: white;" onclick="connectWithDesigner()">🎨 Connect with Designer</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="trackModal" class="modal">
+            <div class="modal-content" style="width: 500px;">
+                <span style="float:right; cursor:pointer; font-size: 24px;" onclick="closeTrack()">&times;</span>
+                <h2 id="trackTitle" style="color: var(--kes-cyan); border-bottom: 2px solid var(--kes-cyan); padding-bottom: 5px;"></h2>
+                <div id="trackBody" style="margin-top: 15px; font-size: 0.9rem;"></div>
+            </div>
+        </div>
+
+        <div id="successModal" class="modal">
+            <div class="modal-content" style="text-align:center;">
+                <div style="font-size: 4rem; color: var(--success); margin-bottom: 10px;">✔</div>
+                <h2 style="color: var(--kes-cyan); margin-bottom: 10px;">Order Received!</h2>
+                <div id="orderSuccessSummary" style="margin-bottom: 15px; background: #f9f9f9; padding: 10px; border-radius: 8px; border: 1px solid #eee;"></div>
+                <div id="successMsg" style="margin-bottom: 20px; font-size: 0.95rem; line-height: 1.5;"></div>
+                <div style="display: flex; gap: 10px; flex-direction: column;">
+                   <button class="primary-btn" id="autoTrackBtn" style="background: var(--kes-magenta); color: white; font-weight: 800;">Track My Order Status Now</button>
+                   <button class="primary-btn" onclick="closeSuccess()" style="background: var(--kes-cyan); color: white;">Continue Shopping</button>
+                </div>
+            </div>
+        </div>
+        
+        <div id="paymentModal" class="modal">
+            <div class="modal-content">
+                <span style="float:right; cursor:pointer;" onclick="closePayment()">&times;</span>
+                <h2 style="margin-bottom: 15px; text-align: center;">Secure Checkout</h2>
+                
+                <div class="card-brands">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/d/d6/Visa_2021.svg" alt="Visa">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" alt="Mastercard">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/f/fa/American_Express_logo_%282018%29.svg" alt="Amex">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" alt="PayPal">
+                </div>
+
+                <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+                    <p>Order Total: <strong id="payTotal">R0.00</strong></p>
+                    <p id="fulfillmentDetail" style="font-size: 0.8rem; color: #666;"></p>
+                </div>
+
+                <form id="paymentForm" onsubmit="processPayment(event)">
+                    <label style="font-size: 0.75rem; font-weight: bold; text-transform: uppercase; color: #666;">Contact Information</label>
+                    <input type="tel" id="custPhone" placeholder="Phone Number" required>
+                    <div id="addressSection" style="display:none;">
+                        <label style="font-size: 0.75rem; font-weight: bold; text-transform: uppercase; color: #666;">Delivery Address</label>
+                        <textarea id="custAddress" placeholder="Street, Suburb, City, Postal Code"></textarea>
+                    </div>
+                    
+                    <hr style="margin: 15px 0; border: 0.5px solid #eee;">
+                    
+                    <label style="font-size: 0.75rem; font-weight: bold; text-transform: uppercase; color: #666;">Payment Details</label>
+                    <input type="text" id="cardName" placeholder="Cardholder Name" required>
+                    
+                    <div class="input-with-icon">
+                        <input type="text" id="cardNumber" placeholder="Card Number (16 Digits)" maxlength="16" required>
+                        <img src="https://cdn-icons-png.flaticon.com/512/633/633611.png" class="field-icon" alt="card-icon">
+                    </div>
+
+                    <div style="display: flex; gap: 10px;">
+                        <input type="text" id="cardExp" placeholder="MM/YY" maxlength="5" required>
+                        <div class="input-with-icon">
+                            <input type="text" id="cardCvc" placeholder="CVC" maxlength="3" required>
+                            <img src="https://cdn-icons-png.flaticon.com/512/570/570227.png" class="field-icon" style="width: 20px;" alt="help">
+                        </div>
+                    </div>
+                    
+                    <div id="paymentErrorMessage" style="color: red; font-size: 0.8rem; margin-bottom: 10px; display: none;"></div>
+                    <button type="submit" id="payBtn" class="primary-btn" style="background: #8bc34a; color: white; text-transform: uppercase; letter-spacing: 1px;">Confirm & Pay Now</button>
+                </form>
+            </div>
+        </div>
+
+        <div id="detailModal" class="modal">
+            <div class="modal-content" id="detailContent">
+                </div>
+        </div>
+
+        <aside id="cart-sidebar">
+            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 2px solid var(--kes-cyan); padding-bottom: 10px;">
+                <h3>Your Order</h3>
+                <span onclick="toggleCart()" style="cursor:pointer; font-size: 24px;">&times;</span>
+            </div>
+            <div class="fulfillment-options">
+                <button id="btnCollect" class="option-btn active" onclick="setFulfillment('collection')">Pickup</button>
+                <button id="btnDeliver" class="option-btn" onclick="setFulfillment('delivery')">Delivery (+R15.00)</button>
+            </div>
+            <div id="cart-items" style="flex-grow:1; margin-top:10px; overflow-y:auto;"></div>
+            <div style="padding-top:15px; border-top: 1px solid #eee;">
+                <div style="display:flex; justify-content:space-between; font-weight: bold; font-size: 1.1rem; margin-bottom: 15px;">
+                    <span>Total:</span>
+                    <span id="cart-total">R0.00</span>
+                </div>
+                <button class="primary-btn" onclick="openPayment()" style="background: var(--kes-magenta); color: white;">Checkout Now</button>
+            </div>
+        </aside>
+
+        <footer>
+            <p>&copy; 2026 KES Printing. Professional Development South Africa.</p>
+        </footer>
+    </div>
+
+    <div id="adminQuickTimerModal" class="modal">
+        <div class="modal-content" style="width: 400px; text-align: center;">
+            <h3 id="timerModalHeading" style="color: var(--kes-cyan); margin-bottom: 15px;">Set Delivery Time</h3>
+            <p style="font-size: 0.85rem; color: #666; margin-bottom: 20px;">How long will this stage take?</p>
+            <div style="display: flex; gap: 5px; align-items: center; margin-bottom: 20px;">
+                <div style="flex: 1;">
+                    <label style="font-size: 0.65rem; font-weight: bold; color: #999;">DAYS</label>
+                    <input type="number" id="quickDays" value="0" min="0" style="text-align: center;">
+                </div>
+                <div style="flex: 1;">
+                    <label style="font-size: 0.65rem; font-weight: bold; color: #999;">HOURS</label>
+                    <input type="number" id="quickHours" value="0" min="0" style="text-align: center;">
+                </div>
+                <div style="flex: 1;">
+                    <label style="font-size: 0.65rem; font-weight: bold; color: #999;">MINS</label>
+                    <input type="number" id="quickMins" value="0" min="0" style="text-align: center;">
+                </div>
+            </div>
+            <div style="display: flex; gap: 10px;">
+                <button onclick="closeQuickTimer()" style="flex: 1; padding: 10px; border: none; border-radius: 6px; cursor: pointer;">CANCEL</button>
+                <button onclick="confirmQuickTimer()" style="flex: 1; background: var(--kes-cyan); color: white; border: none; padding: 10px; border-radius: 6px; cursor: pointer; font-weight: bold;">SET TIMER</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="admin-view">
+        <div id="notification-ping" style="display: none; position: fixed; top: 20px; right: 20px; background: var(--success); color: white; padding: 15px; border-radius: 8px; z-index: 11000; box-shadow: 0 5px 15px rgba(0,0,0,0.2);">
+            🔔 NEW ORDER RECEIVED!
+        </div>
+
+        <div id="confirmModal" class="modal">
+            <div class="modal-content">
+                <h3 style="color:var(--kes-magenta); margin-bottom:15px;">Wipe All Data?</h3>
+                <p style="font-size:0.9rem; margin-bottom:20px; color:#555;">This will permanently clear all order history. This cannot be undone.</p>
+                <div style="display:flex; gap:10px;">
+                    <button onclick="closeModal()" style="flex:1; padding:12px; border:none; border-radius:6px; cursor:pointer; background:#eee;">CANCEL</button>
+                    <button onclick="confirmClearAll()" style="flex:1; padding:12px; border:none; border-radius:6px; cursor:pointer; background:var(--kes-magenta); color:white; font-weight:bold;">CLEAR OK</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="adminOrderDetailModal" class="modal">
+            <div class="modal-content" style="width: 550px;">
+                <span style="float:right; cursor:pointer; font-size: 24px;" onclick="closeAdminOrderModal()">&times;</span>
+                <h2 id="adminOrderTitle" style="color: var(--kes-cyan); margin-bottom: 15px;"></h2>
+                <div id="adminOrderInfo" style="font-size: 0.9rem; line-height: 1.6;"></div>
+                
+                <hr style="margin: 15px 0; border: 0.5px solid #eee;">
+                
+                <h3 style="font-size: 1rem; margin-bottom: 10px;">Order Job Specifications:</h3>
+                <div id="adminOrderItems" style="margin-bottom: 20px;"></div>
+                
+                <div id="sampleUploadSection" class="card" style="padding: 15px; border: 2px dashed var(--kes-yellow);">
+                    <h4>Upload Proof/Sample for Customer</h4>
+                    <input type="file" id="sampleImageUpload" accept="image/*" onchange="uploadSampleToOrder()">
+                    <p id="sampleStatus" style="font-size: 0.75rem; color: green;"></p>
+                </div>
+
+                <div style="display: flex; gap: 10px; margin-top: 20px;">
+                    <button class="primary-btn" style="flex: 1; background: var(--kes-magenta); color: white;" onclick="sendSampleToCustomer()">📤 Send Sample to Customer</button>
+                    <button class="primary-btn" style="flex: 1; background: var(--kes-cyan); color: white;" onclick="downloadCustomerDesign()">📥 Download Customer Design Files</button>
+                    <button class="primary-btn" style="flex: 1;" onclick="closeAdminOrderModal()">Close</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="sidebar">
+            <h2 style="color: white; margin-top: 10px;">KES ADMIN</h2>
+            <div class="nav-item active" id="nav-inv" onclick="showPanel('inv')"><span>📦</span> Inventory</div>
+            <div class="nav-item" id="nav-ord" onclick="showPanel('ord')"><span>💸</span> Orders</div>
+            <div class="nav-item" id="nav-gal" onclick="showPanel('gal')"><span>🖼️</span> Gallery Manager</div>
+            <div class="nav-item" id="nav-map" onclick="showPanel('map')"><span>📍</span> Live Map</div>
+            <div class="nav-item" onclick="logout()" style="margin-top: auto; border-top: 1px solid #444; background: #c0392b; color: white;"><span>🚪</span> Logout System</div>
+        </div>
+
+        <div class="main-admin">
+            <div class="stats-bar">
+                <div class="stat-card"><h4>Revenue</h4><p id="stat-revenue">R0.00</p></div>
+                <div class="stat-card" style="border-top-color: var(--kes-magenta);"><h4>Orders</h4><p id="stat-orders">0</p></div>
+            </div>
+
+            <div id="inv-panel" class="card">
+                <h3><span id="inv-title">Add New Product</span></h3>
+                <div class="form-grid">
+                    <input type="text" id="name" placeholder="Product Name">
+                    <input type="number" id="price" placeholder="Price (R)">
+                    
+                    <div class="upload-area" style="border: 2px dashed var(--kes-magenta);">
+                        <p style="font-size: 0.8rem; color: #666;">Upload 10 Images & 2 Videos (max 30s)</p>
+                        <input type="file" id="imgUpload" accept="image/*" multiple onchange="handleProductFiles(this)">
+                        <input type="file" id="videoUpload" accept="video/mp4" multiple onchange="handleProductVideos(this)">
+                    </div>
+                    
+                    <div id="adminPreviewGallery"></div>
+                    
+                    <textarea id="desc" placeholder="Product Details..."></textarea>
+                </div>
+                <button class="btn-action" id="inv-btn" onclick="addProduct()">Publish to Store</button>
+                <div class="table-container" style="margin-top:20px;">
+                    <table>
+                        <thead><tr><th>Preview</th><th>Name</th><th>Price</th><th>Action</th></tr></thead>
+                        <tbody id="prodBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="ord-panel" style="display:none; width: 100%;">
+                <div class="card" style="width: 100%; min-height: 80vh;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px;">
+                        <h2 style="font-size: 1.8rem; color: var(--kes-cyan);">Live Order Fulfillment Queue</h2>
+                        <button onclick="openModal()" style="color:red; background:none; border:none; font-size:0.8rem; font-weight:bold; cursor:pointer; text-decoration: underline;">PURGE HISTORY</button>
+                    </div>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Order ID</th>
+                                    <th>Customer</th>
+                                    <th>Assets</th>
+                                    <th>Live Timer</th>
+                                    <th>Production Control</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ordBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div id="gal-panel" class="card" style="display:none;">
+                <h3>KES Showcase Gallery Management</h3>
+                <div class="form-grid" style="border: 2px dashed var(--kes-cyan); padding: 20px; border-radius: 12px; margin-bottom: 20px;">
+                    <p style="font-size: 0.8rem; color: #666; grid-column: 1/-1;">Upload Photos, Videos (MP4), Animations (GIF) for customers to see.</p>
+                    <input type="file" id="adminGalInput" accept="image/*,video/*" multiple style="grid-column: 1/-1;" onchange="previewGalleryImages(this)">
+                    <div id="galleryPreviewBox" style="display:none; grid-column: 1/-1; margin-top: 10px; border: 1px dashed var(--kes-cyan); padding: 10px; text-align: center;">
+                        <p style="font-size: 0.75rem; color: var(--success); margin-bottom: 5px;">Preview Assets to Upload:</p>
+                        <div id="galPrevCont" style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;"></div>
+                    </div>
+                    <button class="primary-btn" style="background: var(--kes-cyan); color: white;" onclick="uploadMultipleToGallery()">Upload Selection to Gallery</button>
+                </div>
+                <div class="gallery" id="admin-gallery"></div>
+            </div>
+
+            <div id="map-panel" class="card" style="display:none;">
+                <h3>Live Delivery Map (Soweto Area)</h3>
+                <div id="delivery-map"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <script>
+        /* =========================================
+           CORE LOGIC: PROFESSIONAL AUTH SYSTEM
+           ========================================= */
+        let currentUser = JSON.parse(localStorage.getItem('kes_session')) || null;
+        let generatedCode = null;
+        let tempUser = null;
+        let isLoginMode = false;
+
+        /* FIXED LOGIC START: Asset Persistence Arrays */
+        let productImages = []; 
+        let productVideos = []; 
+        let galleryUploadQueue = []; // New queue for bulk gallery uploads
+        /* FIXED LOGIC END */
+        
+        let galleryData = JSON.parse(localStorage.getItem('kes_gallery_media')) || [];
+
+        function checkAuth() {
+            if (!currentUser) {
+                document.getElementById('gate-keeper').style.display = 'flex';
+                document.getElementById('customer-view').style.display = 'none';
+                document.getElementById('admin-view').style.display = 'none';
+                document.body.style.overflow = 'hidden';
+            } else {
+                document.getElementById('displayUserName').innerText = `Welcome, ${currentUser.name}`;
+                document.getElementById('gate-keeper').style.display = 'none';
+                
+                const isAdminModeActive = localStorage.getItem('kes_admin_active') === 'true';
+                
+                if (isAdminModeActive && currentUser.email === "kingbashir24@gmail.com") {
+                    enterAdminMode();
+                } else {
+                    document.getElementById('customer-view').style.display = 'block';
+                    document.getElementById('admin-view').style.display = 'none';
+                }
+                
+                document.body.style.overflow = 'auto';
+                displayProducts();
+                renderGallery(); 
+                startOrderStatusMonitor();
+            }
+        }
+
+        function startOrderStatusMonitor() {
+            setInterval(() => {
+                const orders = JSON.parse(localStorage.getItem('kes_live_orders')) || [];
+                const myActiveOrders = orders.filter(o => 
+                    o.customer === (currentUser ? currentUser.name : "Guest") && 
+                    o.status !== "Order Collected" && 
+                    o.status !== "Successfully Delivered"
+                ).reverse();
+
+                const btn = document.getElementById('mainTrackBtn');
+                if (myActiveOrders.length > 0) {
+                    const latest = myActiveOrders[0];
+                    btn.classList.add('status-popup'); 
+                    
+                    if (latest.status === "Printing in Progress") {
+                        btn.innerText = "🖨️ Order in Printing System...";
+                    } else if (latest.status === "Waiting for Collection" || latest.status === "With Delivery Courier") {
+                        btn.innerText = "🎁 Order Waiting for Collection!";
+                    } else {
+                        btn.innerText = `🔍 Track Order: ${latest.status}`;
+                    }
+                } else {
+                    btn.classList.remove('status-popup');
+                    btn.style.background = "var(--kes-magenta)";
+                    btn.innerText = "🔍 Track My Live Order";
+                }
+            }, 5000);
+        }
+
+        /* FIXED LOGIC: Multiple Gallery Previews */
+        function previewGalleryImages(input) {
+            const files = Array.from(input.files);
+            if (!files.length) return;
+            
+            galleryUploadQueue = [];
+            const cont = document.getElementById('galPrevCont');
+            cont.innerHTML = "";
+            document.getElementById('galleryPreviewBox').style.display = 'block';
+
+            files.forEach(file => {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const src = e.target.result;
+                    const type = file.type.startsWith('video') ? 'video' : 'img';
+                    galleryUploadQueue.push({ src, type });
+
+                    const wrapper = document.createElement('div');
+                    wrapper.style.cssText = "width: 80px; height: 80px; border-radius: 8px; overflow: hidden; border: 1px solid var(--kes-cyan);";
+                    wrapper.innerHTML = type === 'video' ? 
+                        `<video src="${src}" style="width:100%; height:100%; object-fit:cover;"></video>` : 
+                        `<img src="${src}" style="width:100%; height:100%; object-fit:cover;">`;
+                    cont.appendChild(wrapper);
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        /* FIXED LOGIC: Bulk Gallery Upload */
+        function uploadMultipleToGallery() {
+            if (!galleryUploadQueue.length) return alert("System Notification: Please select media files first.");
+            
+            galleryUploadQueue.forEach(item => {
+                galleryData.push({ id: Date.now() + Math.random(), src: item.src, type: item.type });
+            });
+
+            localStorage.setItem('kes_gallery_media', JSON.stringify(galleryData));
+            renderGallery();
+            
+            galleryUploadQueue = [];
+            document.getElementById('adminGalInput').value = "";
+            document.getElementById('galleryPreviewBox').style.display = 'none';
+            alert(`Success: Integrated ${galleryData.length} new items into the gallery.`);
+        }
+
+        function renderGallery() {
+            const adminGal = document.getElementById('admin-gallery');
+            const publicGal = document.getElementById('public-gallery');
+            if(!adminGal || !publicGal) return;
+
+            adminGal.innerHTML = "";
+            publicGal.innerHTML = "";
+
+            galleryData.forEach(item => {
+                const mediaTag = item.type === 'video' ? `<video src="${item.src}" autoplay loop muted></video>` : `<img src="${item.src}">`;
+                
+                adminGal.innerHTML += `
+                    <div class="gallery-item">
+                        <button class="delete-media-btn" onclick="deleteMedia(${item.id})" style="position:absolute; top:5px; right:5px; background:red; color:white; border:none; border-radius:50%; width:20px; height:20px; cursor:pointer; z-index:10;">&times;</button>
+                        ${mediaTag}
+                    </div>
+                `;
+
+                publicGal.innerHTML += `
+                    <div class="gallery-item" onclick="openGalleryViewer('${item.src}', '${item.type}')">
+                        ${mediaTag}
+                    </div>
+                `;
+            });
+        }
+
+        function openGalleryViewer(src, type) {
+            const box = document.getElementById('viewer-box');
+            if (type === 'video') {
+                box.innerHTML = `<video src="${src}" controls autoplay style="max-width:100%;"></video>`;
+            } else {
+                box.innerHTML = `<img src="${src}" style="max-width:100%;">`;
+            }
+            document.getElementById('gallery-viewer').style.display = 'flex';
+            document.body.style.overflow = 'hidden'; 
+        }
+
+        function closeGalleryViewer() {
+            document.getElementById('gallery-viewer').style.display = 'none';
+            document.getElementById('viewer-box').innerHTML = "";
+            document.body.style.overflow = 'auto'; 
+        }
+
+        function deleteMedia(id) {
+            galleryData = galleryData.filter(m => m.id !== id);
+            localStorage.setItem('kes_gallery_media', JSON.stringify(galleryData));
+            renderGallery();
+        }
+
+        function toggleAuthTab(mode) {
+    isLoginMode = (mode === 'login');
+    isForgotMode = false; // Reset forgot mode when switching tabs
+    
+    // UI Tab underline
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.getElementById(mode + '-tab').classList.add('active');
+    
+    // Field Toggles
+    document.getElementById('nameField').style.display = isLoginMode ? 'none' : 'block';
+    document.getElementById('passwordField').style.display = isLoginMode ? 'block' : 'none';
+    
+    // Button Text Update
+    const btn = document.getElementById('authSubmitBtn');
+    btn.innerText = isLoginMode ? 'Sign In' : 'Get Verification Code';
+    btn.style.background = "var(--kes-cyan)";
+}
+
+function triggerForgotPassword() {
+    isForgotMode = true;
+    isLoginMode = false; // We switch to 'verification' mode
+    
+    // Hide name and password, only show email
+    document.getElementById('nameField').style.display = 'none';
+    document.getElementById('passwordField').style.display = 'none';
+    
+    const btn = document.getElementById('authSubmitBtn');
+    btn.innerText = "Send Reset Code";
+    btn.style.background = "var(--kes-magenta)";
+    
+    alert("System: Please enter your registered email to receive a recovery code.");
+}
+
+
+        function handleAuth(e) {
+            e.preventDefault();
+            const email = document.getElementById('userEmail').value;
+            if (isLoginMode) {
+                const users = JSON.parse(localStorage.getItem('kes_registered_users')) || [];
+                const found = users.find(u => u.email === email && u.pass === document.getElementById('userPass').value);
+                if (found) {
+                    currentUser = found;
+                    localStorage.setItem('kes_session', JSON.stringify(found));
+                    checkAuth();
+                } else {
+                    alert("Authorization Denied: Credentials do not match our professional records.");
+                }
+            } else {
+                const name = document.getElementById('userNameInput').value;
+                if(!name) return alert("System Requirement: Full Name is mandatory for registration.");
+                generatedCode = Math.floor(100000 + Math.random() * 900000);
+                tempUser = { name, email };
+                const otpParams = { email: email, verification_code: generatedCode, time: "15 minutes" };
+                emailjs.send("service_KESprinting", "template_ep4d5th", otpParams)
+                    .then(() => { alert("Verification Dispatched: Please verify the OTP sent to your email."); })
+                    .catch((err) => { console.error("OTP Failed:", err); alert("Network error: Could not transmit OTP. Please verify your connection."); });
+                document.getElementById('authForm').style.display = 'none';
+                document.getElementById('verify-step').style.display = 'block';
+            }
+        }
+
+        async function confirmVerification() {
+            const code = document.getElementById('verificationCodeInput').value;
+            if (code == generatedCode) {
+                // INJECTION: Await the custom prompt to ensure logic waits for password
+                const pass = await prompt("Verification Successful: Please establish a secure password for your account.");
+                if (pass && pass.length >= 4) {
+                    const finalUser = { ...tempUser, pass };
+                    let users = JSON.parse(localStorage.getItem('kes_registered_users')) || [];
+                    users.push(finalUser);
+                    localStorage.setItem('kes_registered_users', JSON.stringify(users));
+                    currentUser = finalUser;
+                    localStorage.setItem('kes_session', JSON.stringify(finalUser));
+                    checkAuth();
+                } else { alert("Security Notice: Password must be at least 4 characters long."); }
+            } else { alert("Verification Failed: Invalid or expired security code."); }
+        }
+
+        function logout() { 
+            localStorage.removeItem('kes_session'); 
+            localStorage.setItem('kes_admin_active', 'false');
+            location.reload(); 
+        }
+
+        function openProModal() {
+            document.getElementById('pro-admin-modal').style.display = 'flex';
+            document.getElementById('adminPassInput').focus();
+        }
+        function closeProModal() {
+            document.getElementById('pro-admin-modal').style.display = 'none';
+            document.getElementById('adminPassInput').value = '';
+        }
+        function verifyAdminPass() {
+            const pass = document.getElementById('adminPassInput').value;
+            if(pass === "kingbash2026") { enterAdminMode(); closeProModal(); } 
+            else { alert("Security Alert: Unauthorized access attempt to Administrative Panel."); }
+        }
+
+        let map;
+        function enterAdminMode() {
+            document.getElementById('customer-view').style.display = 'none';
+            document.getElementById('admin-view').style.display = 'block';
+            localStorage.setItem('kes_admin_active', 'true');
+            renderAll();
+            renderGallery(); 
+            if (!map) {
+                map = L.map('delivery-map').setView([-26.2485, 27.8540], 13);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+            }
+        }
+
+        let logoClicks = 0;
+        document.querySelector('.k-blue').addEventListener('click', () => {
+            if(currentUser && currentUser.email === "kingbashir24@gmail.com") { enterAdminMode(); return; }
+            logoClicks++;
+            if(logoClicks === 5) { openProModal(); logoClicks = 0; }
+            setTimeout(() => { logoClicks = 0; }, 3000);
+        });
+
+        const defaultProducts = [
+            { id: 1, name: "KES595 BUSINESS CARDS _PROCESSING", price: 450.00, img: ["OIP (5).jfif"], desc: "Professional grade print on high-gsm media. Perfect for economic branding." },
+            { id: 2, name: "Large Vinyl Banner", price: 890.00, img: ["OIP (7).jfif"], desc: "Heavy duty weather-proof vinyl banners with eyelets." },
+            { id: 3, name: "Marketing Brochures", price: 1200.00, img: ["OIP (1).jfif"], desc: "Professional grade tri-fold brochures for high impact marketing." }
+        ];
+
+        let products = JSON.parse(localStorage.getItem('kes_live_products')) || defaultProducts;
+        let cart = JSON.parse(localStorage.getItem('kes_cart')) || [];
+        let fulfillment = 'collection';
+
+        function openTrackLookup() {
+            const list = document.getElementById('recentOrdersList');
+            const orders = JSON.parse(localStorage.getItem('kes_live_orders')) || [];
+            
+            const myOrders = orders.filter(o => 
+                o.customer === (currentUser ? currentUser.name : "Guest") && 
+                o.status !== "Order Collected" && 
+                o.status !== "Successfully Delivered"
+            ).reverse().slice(0, 3);
+            
+            const notifArea = document.getElementById('customer-notif-area');
+            notifArea.innerHTML = "";
+            const pendingReady = myOrders.find(o => o.status === "Waiting for Collection" || o.status === "With Delivery Courier");
+            
+            if(pendingReady) {
+                notifArea.innerHTML = `<div class="cust-notif-ping">🔔 System Update: Your order ${pendingReady.id} is ready for ${pendingReady.status.includes('Delivery') ? 'Delivery' : 'Collection'}!</div>`;
+            }
+
+            if(myOrders.length > 0) {
+                list.innerHTML = myOrders.map(o => {
+                    let extraClass = (o.status === "Waiting for Collection" || o.status === "With Delivery Courier") ? "order-btn-waiting" : "";
+                    return `
+                    <button class="primary-btn ${extraClass}" style="background: white; border: 1px solid var(--kes-magenta); color: var(--kes-magenta); position: relative;" onclick="trackOrder('${o.id}'); closeTrackLookup();">
+                        Order #${o.id} - ${o.status}
+                        ${extraClass ? '<span style="position:absolute; top:-5px; right:-5px; background:red; border-radius:50%; width:10px; height:10px;"></span>' : ''}
+                    </button>
+                `}).join('');
+            } else {
+                list.innerHTML = '<p style="font-size:0.8rem; color:#999;">Records Notice: No active order tracking at this time.</p>';
+            }
+            document.getElementById('trackLookupModal').style.display = 'flex';
+        }
+
+        function closeTrackLookup() { document.getElementById('trackLookupModal').style.display = 'none'; }
+
+        function initTrackFromModal() {
+            const id = document.getElementById('trackIDInput').value;
+            if(!id) return alert("Entry Error: Please provide a valid Order Reference Number.");
+            trackOrder(id.toUpperCase());
+            closeTrackLookup();
+        }
+
+        let countdownInterval;
+
+        function startHandoverTimer(seconds, status, targetId = 'handoverTime') {
+            clearInterval(countdownInterval);
+            let time = seconds;
+            const display = document.getElementById(targetId);
+            const circle = document.querySelector('.timer-circle');
+            const label = document.querySelector('.timer-label');
+            const instruct = document.getElementById('timerInstruction');
+
+            if(status === "Printing in Progress") {
+                if(circle) circle.style.borderColor = "var(--kes-cyan)";
+                if(label) label.innerText = "Printing";
+                if(instruct) instruct.innerText = "Order is currently on the press...";
+            } else if (status === "With Delivery Courier") {
+                if(circle) circle.style.borderColor = "var(--kes-magenta)";
+                if(label) label.innerText = "Dispatch";
+                if(instruct) instruct.innerText = "Courier is preparing for delivery";
+            } else if (status === "Waiting for Collection") {
+                if(circle) circle.style.borderColor = "var(--success)";
+                if(label) label.innerText = "Ready";
+                if(instruct) instruct.innerText = "Items at front desk for collection";
+            } else {
+                if(circle) circle.style.borderColor = "#ddd";
+                if(label) label.innerText = "Wait";
+                if(instruct) instruct.innerText = "Wait for Admin to give order to driver";
+            }
+            
+            if(!display) return;
+
+            function update() {
+                if (time <= 0) {
+                    display.innerText = "0:00";
+                    clearInterval(countdownInterval);
+                    return;
+                }
+                
+                let d = Math.floor(time / (24 * 3600));
+                let h = Math.floor((time % (24 * 3600)) / 3600);
+                let m = Math.floor((time % 3600) / 60);
+                let s = time % 60;
+                
+                let text = "";
+                if (d > 0) text += `${d}d `;
+                if (h > 0 || d > 0) text += `${h}h `;
+                text += `${m}m ${s}s`;
+                
+                display.innerText = text;
+                time--;
+            }
+            
+            update();
+            countdownInterval = setInterval(update, 1000);
+        }
+
+        function trackOrder(id) {
+            const orders = JSON.parse(localStorage.getItem('kes_live_orders')) || [];
+            const found = orders.find(o => o.id === id);
+            document.getElementById('trackModal').style.display = 'flex';
+            
+            if (found) {
+                let itemsHtml = found.items.map(i => `
+                    <div style="background: white; padding: 15px; border-radius: 8px; margin-bottom: 10px; border: 1px solid #eee; display: flex; gap: 15px;">
+                        <img src="${Array.isArray(i.img) ? i.img[0] : i.img}" style="width: 70px; height: 70px; object-fit: cover; border-radius: 5px;">
+                        <div style="flex: 1;">
+                            <h4 style="color: var(--kes-black); margin-bottom: 5px;">${i.name}</h4>
+                            <p style="font-size: 0.8rem; color: #555;"><strong>Specs:</strong> ${i.customText}</p>
+                            <p style="font-size: 0.8rem; color: #555;"><strong>Style:</strong> ${i.customStyle}</p>
+                        </div>
+                    </div>
+                `).join('');
+
+                let sampleHtml = (found.sample && found.status !== "Approved by Customer") ? `
+                    <div style="margin-top:20px; background:#f0f8ff; padding:15px; border-radius:10px; border: 2px solid var(--kes-cyan);">
+                        <p style="font-weight:bold; color: var(--kes-cyan); margin-bottom: 10px; text-transform: uppercase; font-size: 0.8rem;">🎨 DESIGN PROOF READY</p>
+                        <img src="${found.sample}" class="sample-preview" style="border: 4px solid white; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+                        <div style="display:flex; gap:10px; margin-top:15px;">
+                            <button onclick="approveSample('${found.id}')" style="background:var(--success); color:white; border:none; padding:12px; border-radius:6px; cursor:pointer; flex:1; font-weight: bold; font-size: 0.75rem;">Approve & Print</button>
+                            <button onclick="toggleChangeRequest()" style="background:orange; color:white; border:none; padding:12px; border-radius:6px; cursor:pointer; flex:1; font-weight: bold; font-size: 0.75rem;">Request Edits</button>
+                        </div>
+                        <div id="changeRequestForm" style="display:none; margin-top: 15px;">
+                            <label style="font-size: 0.8rem; font-weight: bold;">What should we change?</label>
+                            <textarea id="editRequestText" placeholder="e.g. Change logo size, update the phone number..."></textarea>
+                            <button onclick="sendEditRequest('${found.id}')" class="primary-btn" style="background: var(--kes-magenta); color: white; margin-top: 5px;">Submit Request</button>
+                        </div>
+                    </div>
+                ` : `
+                    <div style="margin-top:20px; text-align: center; color: #777; background: #eee; padding: 20px; border-radius: 10px;">
+                        <p style="font-weight:bold; font-size: 0.8rem;">🕒 DESIGN STAGE</p>
+                        <p style="font-size:0.75rem;">${found.status === "Approved by Customer" ? "Artwork authorized. Proceeding to fulfillment." : "Our designers are crafting your artwork. Proof will appear here soon."}</p>
+                    </div>
+                `;
+
+                let customerConfirmHtml = "";
+                if(found.status === "Waiting for Collection" || found.status === "With Delivery Courier") {
+                    customerConfirmHtml = `
+                    <div style="margin-top: 20px; background: var(--kes-black); padding: 15px; border-radius: 10px; text-align: center;">
+                        <p style="color: white; font-weight: bold; margin-bottom: 10px; font-size: 0.85rem;">Order Received? Mark as Complete:</p>
+                        <button onclick="customerCompleteOrder('${found.id}', '${found.status.includes('Delivery') ? 'Successfully Delivered' : 'Order Collected'}')" class="primary-btn" style="background: var(--success); color: white;">Yes, Received ✅</button>
+                    </div>
+                    `;
+                }
+
+                let timerHtml = `
+                    <div class="countdown-container">
+                        <div class="timer-circle">
+                            <span class="timer-display" id="handoverTime">0:00</span>
+                            <span class="timer-label">Wait</span>
+                        </div>
+                        <p class="timer-instruction" id="timerInstruction">Retrieving order timeline...</p>
+                    </div>
+                `;
+
+                document.getElementById('trackTitle').innerText = "LIVE ORDER STATUS";
+                document.getElementById('trackBody').innerHTML = `
+                    ${timerHtml}
+                    <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; border-bottom: 3px solid var(--kes-magenta); margin-bottom: 15px;">
+                        <p><strong>Order ID:</strong> <span style="color:var(--kes-magenta); font-weight: 900;">${found.id}</span></p>
+                        <p><strong>Status:</strong> ${found.status}</p>
+                    </div>
+                    ${sampleHtml}
+                    <div style="margin-top: 20px; margin-bottom: 15px;">
+                        <h3 style="font-size: 0.8rem; margin-bottom: 8px; color: var(--kes-black); text-transform: uppercase;">Job Asset Details:</h3>
+                        ${itemsHtml}
+                    </div>
+                    ${customerConfirmHtml}
+                `;
+                
+                let currentTimestamp = Date.now();
+                let remaining = 0;
+                if(found.timerEnd && found.timerEnd > currentTimestamp) {
+                    remaining = Math.floor((found.timerEnd - currentTimestamp) / 1000);
+                }
+
+                startHandoverTimer(remaining, found.status);
+                
+            } else {
+                document.getElementById('trackTitle').innerText = "Search Result: No Record";
+                document.getElementById('trackBody').innerHTML = "<center><p style='padding: 40px; color: red;'>Order ID not recognized.</p></center>";
+            }
+        }
+
+        function customerCompleteOrder(id, status) {
+            updateOrderStatus(id, status);
+            alert(`Thank you for choosing KES Printing! Your order has been marked as ${status.toLowerCase()}.`);
+            closeTrack();
+        }
+
+        function toggleChangeRequest() {
+            const form = document.getElementById('changeRequestForm');
+            form.style.display = (form.style.display === 'none') ? 'block' : 'none';
+        }
+
+        function sendEditRequest(orderID) {
+            const text = document.getElementById('editRequestText').value;
+            if(!text) return alert("Action Required: Please specify the required modifications.");
+            const request = { user: currentUser ? currentUser.name : "Guest", description: `EDIT REQUEST for Order #${orderID}: ${text}`, date: new Date().toLocaleString() };
+            let requests = JSON.parse(localStorage.getItem('kes_design_requests')) || [];
+            requests.push(request);
+            localStorage.setItem('kes_design_requests', JSON.stringify(requests));
+            alert("Sent: Your modification request has been submitted to the design department.");
+            document.getElementById('editRequestText').value = '';
+            toggleChangeRequest();
+        }
+
+        function approveSample(id) {
+            let orders = JSON.parse(localStorage.getItem('kes_live_orders')) || [];
+            let idx = orders.findIndex(o => o.id === id);
+            if(idx > -1) {
+                orders[idx].status = "Approved by Customer";
+                localStorage.setItem('kes_live_orders', JSON.stringify(orders));
+                alert("Approval Confirmed: Your design has been authorized for immediate production.");
+                trackOrder(id);
+            }
+        }
+
+        function closeTrack() { 
+            clearInterval(countdownInterval);
+            document.getElementById('trackModal').style.display = 'none'; 
+        }
+
+        let tempCustomPrintImg = "";
+        function previewCustomImage(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    tempCustomPrintImg = e.target.result;
+                    document.getElementById('customPreviewBox').style.display = 'block';
+                    document.getElementById('fileLabelCustom').innerText = "✅ " + input.files[0].name;
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function addCustomRequestToCart() {
+            const prodType = document.getElementById('customProdType').value;
+            const desc = document.getElementById('designRequest').value;
+
+            if (!prodType) return alert("Entry Required: Please specify the garment or item type.");
+            if (!desc) return alert("Entry Required: Please describe the desired design layout.");
+            if (!tempCustomPrintImg) return alert("System Notice: Image upload is required for custom production.");
+
+            const customProduct = {
+                id: Date.now(),
+                name: prodType,
+                price: 250.00, 
+                img: "KESoooo.jpg", 
+                customText: desc,
+                customStyle: "User Custom Request",
+                customRef: tempCustomPrintImg,
+                desc: "Hand-crafted custom design requested by customer."
+            };
+
+            cart.push(customProduct);
+            localStorage.setItem('kes_cart', JSON.stringify(cart));
+            updateCartUI();
+            
+            document.getElementById('customProdType').value = '';
+            document.getElementById('designRequest').value = '';
+            document.getElementById('designFile').value = '';
+            document.getElementById('customPreviewBox').style.display = 'none';
+            document.getElementById('fileLabelCustom').innerText = "📎 Choose Image File";
+            tempCustomPrintImg = "";
+
+            alert("Cart Updated: Your custom " + prodType + " configuration has been successfully added.");
+            toggleCart(); 
+        }
+
+        function generateOrderID() { return 'KES' + Math.floor(100 + Math.random() * 899); }
+
+        function setFulfillment(type) {
+            fulfillment = type;
+            document.getElementById('btnCollect').classList.toggle('active', type === 'collection');
+            document.getElementById('btnDeliver').classList.toggle('active', type === 'delivery');
+            updateCartUI();
+        }
+
+        let activeProdId = null;
+        function addToCart(id) { activeProdId = id; document.getElementById('personalizeModal').style.display = 'flex'; }
+        function closePersonalize() { document.getElementById('personalizeModal').style.display = 'none'; }
+        function setDesignMode(mode) {
+            document.getElementById('optUpload').classList.toggle('active', mode === 'upload');
+            document.getElementById('optVision').classList.toggle('active', mode === 'vision');
+            document.getElementById('uploadMode').style.display = (mode === 'upload') ? 'block' : 'none';
+            document.getElementById('visionMode').style.display = (mode === 'vision') ? 'block' : 'none';
+        }
+        function connectWithDesigner() { closePersonalize(); window.scrollTo({ top: document.querySelector('.custom-design').offsetTop, behavior: 'smooth' }); }
+
+        let tempRefLogo = "";
+        document.getElementById('custPrintRef').addEventListener('change', function(e) {
+            const reader = new FileReader();
+            reader.onload = () => tempRefLogo = reader.result;
+            if(e.target.files[0]) reader.readAsDataURL(e.target.files[0]);
+        });
+
+        // INJECTION: Modified to ensure cart opens and visual confirmation
+        function finalizeAddToCart() {
+            const p = products.find(x => x.id == activeProdId);
+            const customizedItem = { ...p, customText: document.getElementById('custPrintText').value || "Reference File Only", customStyle: document.getElementById('custPrintColors').value || "As per visual", customRef: tempRefLogo };
+            cart.push(customizedItem);
+            localStorage.setItem('kes_cart', JSON.stringify(cart));
+            updateCartUI();
+            document.getElementById('custPrintText').value = '';
+            document.getElementById('custPrintColors').value = '';
+            document.getElementById('custPrintRef').value = '';
+            tempRefLogo = "";
+            closePersonalize();
+            closeDetail();
+            // Trigger cart sidebar for visual sync
+            document.getElementById('cart-sidebar').classList.add('active');
+        }
+
+        function updateCartUI() {
+            const count = cart.length;
+            document.getElementById('cart-count').innerText = count;
+            const container = document.getElementById('cart-items');
+            if(count === 0) { container.innerHTML = '<p style="text-align:center; color:#999;">Empty</p>'; } 
+            else { 
+                container.innerHTML = cart.map((item, idx) => {
+                    const thumb = Array.isArray(item.img) ? item.img[0] : item.img;
+                    return `<div class="cart-item"><img src="${thumb}"><div style="flex-grow:1"><strong>${item.name}</strong><br>R${item.price}</div><span onclick="removeItem(${idx})" style="cursor:pointer; color:red;">&times;</span></div>`
+                }).join(''); 
+            }
+            let total = cart.reduce((sum, item) => sum + parseFloat(item.price), 0);
+            if (fulfillment === 'delivery' && count > 0) total += 15.00;
+            document.getElementById('cart-total').innerText = `R${total.toFixed(2)}`;
+        }
+
+        function removeItem(idx) { cart.splice(idx, 1); localStorage.setItem('kes_cart', JSON.stringify(cart)); updateCartUI(); }
+
+        function openPayment() {
+            if(cart.length === 0) return alert("System Notice: Please add professional media products to your cart before checking out.");
+            document.getElementById('payTotal').innerText = document.getElementById('cart-total').innerText;
+            document.getElementById('addressSection').style.display = (fulfillment === 'delivery') ? 'block' : 'none';
+            document.getElementById('paymentModal').style.display = 'flex';
+            document.getElementById('paymentErrorMessage').style.display = 'none';
+        }
+
+        function closePayment() { document.getElementById('paymentModal').style.display = 'none'; }
+        function closeSuccess() { document.getElementById('successModal').style.display = 'none'; }
+
+        /* =========================================
+           FIXED: PAYMENT DECLINE INJECTION
+           ========================================= */
+        
+        // LUHN ALGORITHM VALIDATOR (Ensures card exists mathematically)
+        function isValidCard(number) {
+            let sum = 0;
+            let shouldDouble = false;
+            for (let i = number.length - 1; i >= 0; i--) {
+                let digit = parseInt(number.charAt(i));
+                if (shouldDouble) {
+                    if ((digit *= 2) > 9) digit -= 9;
+                }
+                sum += digit;
+                shouldDouble = !shouldDouble;
+            }
+            return (sum % 10) === 0;
+        }
+
+        function processPayment(e) {
+            e.preventDefault();
+            const btn = document.getElementById('payBtn');
+            const totalText = document.getElementById('payTotal').innerText;
+            const phone = document.getElementById('custPhone').value;
+            const address = document.getElementById('custAddress').value || "Pickup";
+            const errBox = document.getElementById('paymentErrorMessage');
+            
+            const cardNum = document.getElementById('cardNumber').value.replace(/\s+/g, '');
+            const cardExp = document.getElementById('cardExp').value;
+            const cardCvc = document.getElementById('cardCvc').value;
+
+            errBox.style.display = 'none';
+
+            // 1. SECURITY CHECK: Luhn Algorithm Validation
+            if (cardNum.length < 13 || cardNum.length > 19 || !isValidCard(cardNum)) {
+                errBox.innerText = "Security Alert: Invalid Card Number. Please check the digits.";
+                errBox.style.display = 'block';
+                return;
+            }
+
+            // 2. SIMULATED BALANCE CHECK: 
+            const simulatedDeclined = cardNum.endsWith('00') || cardNum.endsWith('99');
+
+            btn.innerText = "Authorizing Transaction...";
+            btn.disabled = true;
+
+            setTimeout(() => {
+                if (simulatedDeclined) {
+                    btn.disabled = false;
+                    btn.innerText = "Confirm & Pay Now";
+                    errBox.innerText = "TRANSACTION DECLINED: Your card has insufficient funds. Please use another card.";
+                    errBox.style.display = 'block';
+                    alert("Card Declined: Please use a card with sufficient balance to complete this order.");
+                    return;
+                }
+
+                // --- INJECTED REAL PAYFAST REDIRECT LOGIC ---
+                const orderID = generateOrderID();
+                const totalAmount = parseFloat(totalText.replace('R', ''));
+
+                // Save order locally first so you see it in Admin
+                const newOrder = { 
+                    id: orderID, 
+                    customer: currentUser ? currentUser.name : "Guest", 
+                    phone: phone, 
+                    address: address, 
+                    items: JSON.parse(JSON.stringify(cart)), 
+                    total: totalText, 
+                    status: 'Payment Pending', 
+                    date: new Date().toLocaleString(), 
+                    coords: [-26.2485 + (Math.random() - 0.5) * 0.05, 27.8540 + (Math.random() - 0.5) * 0.05], 
+                    sample: null, 
+                    timerEnd: null
+                };
+                
+                let orders = JSON.parse(localStorage.getItem('kes_live_orders')) || [];
+                orders.push(newOrder);
+                localStorage.setItem('kes_live_orders', JSON.stringify(orders));
+
+                // CREATE A HIDDEN FORM TO SUBMIT TO PAYFAST
+                const pfForm = document.createElement('form');
+                pfForm.action = "https://www.payfast.co.za/eng/process";
+                pfForm.method = "POST";
+
+                const pfData = {
+                    merchant_id: "34605963",
+                    merchant_key: "5o8ttjlxvvyvs", // Ensure this is your correct key
+                    amount: totalAmount.toFixed(2),
+                    item_name: "KES Printing Order " + orderID,
+                    m_payment_id: orderID,
+                    email_address: currentUser ? currentUser.email : "guest@kesprinting.co.za"
+                };
+
+                for (let key in pfData) {
+                    let input = document.createElement('input');
+                    input.type = "hidden";
+                    input.name = key;
+                    input.value = pfData[key];
+                    pfForm.appendChild(input);
+                }
+
+                document.body.appendChild(pfForm);
+                
+                // Clear cart before leaving
+                cart = [];
+                localStorage.setItem('kes_cart', JSON.stringify(cart));
+                updateCartUI();
+
+                // REDIRECT TO REAL PAYFAST
+                pfForm.submit();
+
+            }, 2500);
+        }
+
+        function toggleCart() { document.getElementById('cart-sidebar').classList.toggle('active'); }
+        
+        function displayProducts() { 
+            const prods = JSON.parse(localStorage.getItem('kes_live_products')) || defaultProducts;
+            document.getElementById('product-list').innerHTML = prods.map(p => {
+                const thumb = Array.isArray(p.img) ? p.img[0] : p.img;
+                return `
+                <div class="product-card" onclick="viewDetail(${p.id})">
+                    <img src="${thumb}" class="product-image" onerror="this.src='https://via.placeholder.com/150'">
+                    <div class="product-info">
+                        <h3>${p.name}</h3>
+                        <p class="product-price">R${p.price}</p>
+                        <button class="primary-btn" onclick="event.stopPropagation(); addToCart(${p.id})">Quick Add</button>
+                    </div>
+                </div>`
+            }).join(''); 
+        }
+        
+        function viewDetail(id) { 
+            const prods = JSON.parse(localStorage.getItem('kes_live_products')) || defaultProducts;
+            const p = prods.find(x => x.id == id); 
+            const images = Array.isArray(p.img) ? p.img : [p.img];
+            const videos = p.videos || []; 
+            
+            let mediaList = images.map(img => ({src: img, type: 'img'})).concat(videos);
+
+            let thumbHtml = mediaList.map((item, idx) => `
+                <div class="thumb-item ${idx === 0 ? 'active' : ''}" onclick="switchPreviewMedia(this, '${item.src}', '${item.type}')">
+                    ${item.type === 'video' ? '<span style="font-size:10px; color:white;">VIDEO</span>' : `<img src="${item.src}" style="width:100%; height:100%; object-fit:cover;">`}
+                </div>
+            `).join('');
+
+            document.getElementById('detailContent').innerHTML = `
+                <span onclick="closeDetail()" style="float:right; cursor:pointer; font-size:1.5rem;">&times;</span>
+                <div class="preview-slider-container" id="mediaPlayer">
+                    <img src="${images[0]}" id="mainDetailPreview" class="main-preview-img">
+                </div>
+                <div class="thumbnail-gallery">${thumbHtml}</div>
+                <h2 class="detail-title">${p.name}</h2>
+                <p class="detail-desc">${p.desc}</p>
+                <span class="detail-price">R${p.price}</span>
+                <button class="primary-btn" style="background:var(--kes-cyan); color:white;" onclick="closeDetail(); addToCart(${p.id});">Design your Order</button>`; 
+            document.getElementById('detailModal').style.display = 'flex'; 
+        }
+
+        function switchPreviewMedia(thumb, src, type) {
+            const container = document.getElementById('mediaPlayer');
+            document.querySelectorAll('.thumb-item').forEach(t => t.classList.remove('active'));
+            thumb.classList.add('active');
+
+            if(type === 'video') {
+                container.innerHTML = `<video src="${src}" controls autoplay class="main-preview-img"></video>`;
+            } else {
+                container.innerHTML = `<img src="${src}" class="main-preview-img">`;
+            }
+        }
+
+        function closeDetail() { document.getElementById('detailModal').style.display = 'none'; }
+
+        let currentAdminOrderID = null;
+        let tempSampleImg = "";
+        let quickTimerTargetStatus = "";
+
+        function handleStatusChange(id, newStatus) {
+            currentAdminOrderID = id;
+            quickTimerTargetStatus = newStatus;
+
+            const timedStatuses = ["Waiting for Collection", "With Delivery Courier", "Printing in Progress"];
+            if(timedStatuses.includes(newStatus)) {
+                document.getElementById('timerModalHeading').innerText = "Set Duration for: " + newStatus;
+                document.getElementById('adminQuickTimerModal').style.display = 'flex';
+            } else {
+                updateOrderStatus(id, newStatus);
+            }
+        }
+
+        function closeQuickTimer() {
+            document.getElementById('adminQuickTimerModal').style.display = 'none';
+            renderAll(); 
+        }
+
+        function confirmQuickTimer() {
+            const d = parseInt(document.getElementById('quickDays').value) || 0;
+            const h = parseInt(document.getElementById('quickHours').value) || 0;
+            const m = parseInt(document.getElementById('quickMins').value) || 0;
+            
+            const totalMins = (d * 24 * 60) + (h * 60) * 1 + m;
+            const timerEnd = Date.now() + (totalMins * 60 * 1000);
+
+            let orders = JSON.parse(localStorage.getItem('kes_live_orders')) || [];
+            let idx = orders.findIndex(o => o.id === currentAdminOrderID);
+            if(idx > -1) {
+                orders[idx].status = quickTimerTargetStatus;
+                orders[idx].timerEnd = timerEnd;
+                localStorage.setItem('kes_live_orders', JSON.stringify(orders));
+                /* INJECTED LOGIC: PROFESSIONAL NOTIFICATION */
+                showNotification(`Order ${currentAdminOrderID} updated to ${quickTimerTargetStatus}.`);
+                
+                document.getElementById('quickDays').value = 0;
+                document.getElementById('quickHours').value = 0;
+                document.getElementById('quickMins').value = 0;
+                
+                closeQuickTimer();
+                renderAll();
+            }
+        }
+
+        function viewAdminOrder(id) {
+            currentAdminOrderID = id;
+            const orders = JSON.parse(localStorage.getItem('kes_live_orders')) || [];
+            const o = orders.find(order => order.id === id);
+            if(!o) return;
+            document.getElementById('adminOrderTitle').innerText = "Print Job #" + o.id;
+            document.getElementById('adminOrderInfo').innerHTML = `<strong>Customer:</strong> ${o.customer} | <strong>Phone:</strong> ${o.phone}<br><strong>Current Status:</strong> ${o.status} | <strong>Paid:</strong> ${o.total}`;
+            
+            document.getElementById('adminOrderItems').innerHTML = o.items.map(i => {
+                const thumb = Array.isArray(i.img) ? i.img[0] : i.img;
+                return `
+                <div style="background:#f0f8ff; padding:20px; border-radius:10px; border-left: 8px solid var(--kes-cyan); margin-bottom:15px; box-shadow:0 2px 5px rgba(0,0,0,0.1);">
+                    <div style="display:flex; align-items:center; gap:20px; margin-bottom:15px; border-bottom:1px solid #ddd; padding-bottom:10px;">
+                        <img src="${thumb}" class="order-img-thumb" style="width:80px; height:80px;">
+                        <h4 style="color:#231f20; font-size:1.2rem;">${i.name}</h4>
+                    </div>
+                    <div style="font-size: 0.9rem; color: #333; line-height:1.6;">
+                        <p style="background:white; padding:10px; border-radius:5px; margin-bottom:10px;"><strong>TEXT TO PRINT:</strong><br>${i.customText}</p>
+                        <p style="background:white; padding:10px; border-radius:5px; margin-bottom:10px;"><strong>COLORS & STYLE:</strong><br>${i.customStyle}</p>
+                    </div>
+                    ${i.customRef ? `<p style="margin-top:10px; font-weight:bold;">REFERENCE LOGO/LAYOUT:</p><img src="${i.customRef}" style="width:100%; max-width:300px; border-radius:5px; margin-top:5px; border:1px solid #ccc; background:white;">` : ""}
+                </div>`
+            }).join('');
+            
+            document.getElementById('sampleStatus').innerText = o.sample ? "Asset Control: Sample Proof sent to Customer." : "";
+            document.getElementById('adminOrderDetailModal').style.display = 'flex';
+        }
+
+        function downloadCustomerDesign() {
+            const orders = JSON.parse(localStorage.getItem('kes_live_orders')) || [];
+            const o = orders.find(order => order.id === currentAdminOrderID);
+            if(!o) return;
+            o.items.forEach((item, index) => {
+                if(item.customRef) {
+                    const link = document.createElement('a');
+                    link.href = item.customRef;
+                    link.download = `Order_${o.id}_Item_${index}_Design.png`;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                }
+            });
+            showNotification("Downloading design files.");
+        }
+
+        function uploadSampleToOrder() {
+            const file = document.getElementById('sampleImageUpload').files[0];
+            const reader = new FileReader();
+            reader.onloadend = () => { tempSampleImg = reader.result; document.getElementById('sampleStatus').innerText = "✅ Professional Proof Ready for Dispatch."; }
+            if (file) reader.readAsDataURL(file);
+        }
+
+        function sendSampleToCustomer() {
+            if(!tempSampleImg) return alert("System Notice: Please upload a proof file before attempting dispatch.");
+            let orders = JSON.parse(localStorage.getItem('kes_live_orders')) || [];
+            let idx = orders.findIndex(o => o.id === currentAdminOrderID);
+            if(idx > -1) {
+                orders[idx].sample = tempSampleImg;
+                orders[idx].status = "Design Proof Sent";
+                localStorage.setItem('kes_live_orders', JSON.stringify(orders));
+                document.getElementById('sampleStatus').innerText = "✅ Dispatch Success: Proof sent to Customer Hub.";
+                showNotification("Proof successfully transmitted to customer.");
+                tempSampleImg = "";
+                document.getElementById('sampleImageUpload').value = "";
+                renderAll();
+            }
+        }
+
+        function updateOrderStatus(orderID, newStatus) {
+            let orders = JSON.parse(localStorage.getItem('kes_live_orders')) || [];
+            let idx = orders.findIndex(o => o.id === orderID);
+            if (idx > -1) {
+                orders[idx].status = newStatus;
+                localStorage.setItem('kes_live_orders', JSON.stringify(orders));
+                renderAll();
+                showNotification(`Status: ${newStatus}`);
+                if (document.getElementById('trackLookupModal').style.display === 'flex') {
+                    openTrackLookup();
+                }
+            }
+        }
+
+        function closeAdminOrderModal() { document.getElementById('adminOrderDetailModal').style.display = 'none'; }
+
+        let editingProductId = null;
+        let isProcessingFiles = false;
+
+        /* FIXED LOGIC START: Multiple Image/Video Upload Handler */
+        function handleProductFiles(input) {
+            const files = Array.from(input.files);
+            const btn = document.getElementById('inv-btn');
+            
+            if(files.length === 0) return;
+            if(files.length > 10) { alert("Max 10 images allowed."); input.value = ""; return; }
+
+            isProcessingFiles = true;
+            btn.disabled = true;
+            btn.innerText = "Processing Images...";
+            
+            productImages = []; 
+
+            let loadedCount = 0;
+            files.forEach(file => {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    productImages.push(e.target.result);
+                    loadedCount++;
+                    if(loadedCount === files.length) {
+                        isProcessingFiles = false;
+                        btn.disabled = false;
+                        btn.innerText = editingProductId ? "Update Product" : "Publish to Store";
+                        renderAdminPreview();
+                    }
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        function handleProductVideos(input) {
+            const files = Array.from(input.files);
+            if(files.length > 2) { alert("Max 2 videos allowed."); input.value = ""; return; }
+            
+            productVideos = [];
+
+            let loadedCount = 0;
+            files.forEach(file => {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    productVideos.push({src: e.target.result, type: 'video'});
+                    loadedCount++;
+                    if(loadedCount === files.length) renderAdminPreview();
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        function renderAdminPreview() {
+            const preview = document.getElementById('adminPreviewGallery');
+            preview.innerHTML = "";
+            productImages.forEach(src => {
+                preview.innerHTML += `<div class="admin-prev-item"><img src="${src}"></div>`;
+            });
+            productVideos.forEach(vid => {
+                preview.innerHTML += `<div class="admin-prev-item"><video src="${vid.src}" muted></video></div>`;
+            });
+        }
+
+        function addProduct() {
+            if(isProcessingFiles) return alert("System Notice: Processing media...");
+            
+            const name = document.getElementById('name').value;
+            const price = document.getElementById('price').value;
+            const desc = document.getElementById('desc').value;
+
+            if(!name || !price || productImages.length === 0) return alert("Required: Name, Price, and Media.");
+
+            if (editingProductId) {
+                let idx = products.findIndex(p => p.id === editingProductId);
+                if (idx > -1) {
+                    products[idx].name = name;
+                    products[idx].price = parseFloat(price).toFixed(2);
+                    products[idx].desc = desc;
+                    products[idx].img = [...productImages];
+                    products[idx].videos = [...productVideos];
+                }
+            } else {
+                const newProd = { 
+                    id: Date.now(), 
+                    name, 
+                    price: parseFloat(price).toFixed(2), 
+                    img: [...productImages], 
+                    videos: [...productVideos],
+                    desc 
+                };
+                products.push(newProd);
+            }
+
+            localStorage.setItem('kes_live_products', JSON.stringify(products));
+            resetProductForm();
+            renderAll();
+            displayProducts();
+            showNotification("Inventory Catalog Updated.");
+        }
+
+        function editProduct(id) {
+            const p = products.find(prod => prod.id === id);
+            if (!p) return;
+
+            editingProductId = id;
+            document.getElementById('name').value = p.name;
+            document.getElementById('price').value = p.price;
+            document.getElementById('desc').value = p.desc;
+            
+            document.getElementById('inv-title').innerText = "Editing: " + p.name;
+            document.getElementById('inv-btn').innerText = "Update Product";
+
+            productImages = [...p.img];
+            productVideos = p.videos || [];
+            renderAdminPreview();
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function resetProductForm() {
+            document.getElementById('name').value = '';
+            document.getElementById('price').value = '';
+            document.getElementById('desc').value = '';
+            document.getElementById('imgUpload').value = "";
+            document.getElementById('videoUpload').value = "";
+            document.getElementById('adminPreviewGallery').innerHTML = "";
+            productImages = [];
+            productVideos = [];
+            editingProductId = null;
+            document.getElementById('inv-btn').innerText = "Publish to Store";
+            document.getElementById('inv-title').innerText = "Add New Product";
+        }
+
+        function deleteProduct(id) { 
+            if(confirm("Confirm Deletion: Remove this product?")) {
+                products = products.filter(p => p.id != id); 
+                localStorage.setItem('kes_live_products', JSON.stringify(products)); 
+                renderAll(); 
+                displayProducts(); 
+                showNotification("Product removed from catalog.");
+            }
+        }
+
+        /* INJECTED LOGIC: PROFESSIONAL NOTIFICATION HELPER */
+        function showNotification(message) {
+            const ping = document.getElementById('notification-ping');
+            ping.innerHTML = `🔔 ${message}`;
+            ping.style.display = 'block';
+            setTimeout(() => { ping.style.display = 'none'; }, 4000);
+        }
+
+        /* INJECTED LOGIC: LIVE SYNC ENGINE */
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'kes_live_orders' || e.key === 'kes_live_products') {
+                displayProducts(); 
+                startOrderStatusMonitor(); 
+                if (localStorage.getItem('kes_admin_active') === 'true') {
+                    renderAll(); 
+                }
+            }
+        });
+
+        function renderAll() {
+            const allOrders = JSON.parse(localStorage.getItem('kes_live_orders')) || [];
+            const activeOrders = allOrders.filter(o => o.status !== "Order Collected" && o.status !== "Successfully Delivered");
+            document.getElementById('stat-orders').innerText = activeOrders.length;
+            const revenue = allOrders.reduce((sum, o) => {
+                const cleanTotal = parseFloat(o.total.replace('R', '')) || 0;
+                return sum + cleanTotal;
+            }, 0);
+            document.getElementById('stat-revenue').innerText = `R${revenue.toFixed(2)}`;
+            
+            document.getElementById('prodBody').innerHTML = products.map(p => {
+                const thumb = Array.isArray(p.img) ? p.img[0] : p.img;
+                return `
+                <tr>
+                    <td><img src="${thumb}" width="40" height="40" style="border-radius:5px;"></td>
+                    <td>${p.name}</td>
+                    <td>R${p.price}</td>
+                    <td>
+                        <button onclick="editProduct(${p.id})" style="color:var(--kes-cyan); background:none; border:none; cursor:pointer; font-weight:bold; margin-right:10px;">Edit</button>
+                        <button onclick="deleteProduct(${p.id})" style="color:red; background:none; border:none; cursor:pointer; font-weight:bold;">Delete</button>
+                    </td>
+                </tr>`
+            }).join('');
+            
+            document.getElementById('ordBody').innerHTML = activeOrders.map(o => {
+                let statusClass = "status-processing";
+                let timerBorder = "var(--kes-cyan)";
+                
+                if(o.status.includes("Waiting")) { statusClass = "status-waiting"; timerBorder = "var(--success)"; }
+                if(o.status.includes("Delivery")) { statusClass = "status-delivery"; timerBorder = "var(--kes-magenta)"; }
+                
+                let timerHtml = `<span style="color:#ccc; font-size:0.7rem;">Inactive</span>`;
+                if(o.timerEnd && o.timerEnd > Date.now()) {
+                    let diffS = Math.floor((o.timerEnd - Date.now()) / 1000);
+                    let d = Math.floor(diffS / (24 * 3600));
+                    let h = Math.floor((diffS % (24 * 3600)) / 3600);
+                    let m = Math.floor((diffS % 3600) / 60);
+                    let s = diffS % 60;
+                    let timeStr = d > 0 ? `${d}d ${h}h` : `${m}m ${s}s`;
+                    timerHtml = `
+                        <div class="admin-timer-mini" id="mini-timer-container-${o.id}">
+                            <div class="mini-circle" style="border-color: ${timerBorder}">⏳</div>
+                            <div class="mini-time-text" id="timer-text-${o.id}">${timeStr}</div>
+                        </div>
+                    `;
+                }
+
+                return `
+                <tr>
+                    <td style="font-weight: bold; font-size: 1.1rem;">#${o.id}</td>
+                    <td><strong>${o.customer}</strong><br><span style="font-size: 0.75rem; color: #777;">${o.phone}</span></td>
+                    <td><button onclick="viewAdminOrder('${o.id}')" style="background: var(--kes-magenta); color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; font-size: 0.75rem;">INSPECT DESIGN</button></td>
+                    <td>${timerHtml}</td>
+                    <td>
+                        <div style="display: flex; gap: 5px; flex-wrap: wrap;">
+                            <select onchange="handleStatusChange('${o.id}', this.value)" style="padding: 5px; font-size: 0.75rem; width: 180px; background: #f9f9f9;">
+                                <option value="" disabled selected>${o.status}</option>
+                                <option value="Waiting for Collection">Waiting for Collection</option>
+                                <option value="With Delivery Courier">With Delivery Courier</option>
+                                <option value="Order Collected">Order Collected (Complete)</option>
+                                <option value="Successfully Delivered">Successfully Delivered (Complete)</option>
+                                <option value="Printing in Progress">Printing in Progress</option>
+                            </select>
+                            <span class="status-btn ${statusClass}" style="text-align: center; line-height: 1.8;">${o.status}</span>
+                        </div>
+                    </td>
+                    <td><button onclick="deleteOrder('${o.id}')" style="background:none; border:none; color:red; cursor: pointer; font-size: 1.2rem;">&times;</button></td>
+                </tr>`;
+            }).join('');
+        }
+
+        function deleteOrder(id) { 
+            let orders = JSON.parse(localStorage.getItem('kes_live_orders')) || []; 
+            orders = orders.filter(o => o.id != id); 
+            localStorage.setItem('kes_live_orders', JSON.stringify(orders)); 
+            renderAll(); 
+            showNotification("Order purged from live queue.");
+        }
+        function openModal() { document.getElementById('confirmModal').style.display = 'flex'; }
+        function closeModal() { document.getElementById('confirmModal').style.display = 'none'; }
+        function confirmClearAll() { localStorage.removeItem('kes_live_orders'); renderAll(); closeModal(); showNotification("Database Purged."); }
+        
+        function showPanel(sec) { 
+            ['inv-panel', 'ord-panel', 'gal-panel', 'map-panel'].forEach(p => document.getElementById(p).style.display = 'none'); 
+            ['nav-inv', 'nav-ord', 'nav-gal', 'nav-map'].forEach(n => document.getElementById(n).classList.remove('active')); 
+            document.getElementById(sec + '-panel').style.display = 'block'; 
+            document.getElementById('nav-' + sec).classList.add('active'); 
+            renderAll(); 
+            if(sec === 'gal') renderGallery();
+        }
+
+        checkAuth();
+        updateCartUI();
+        
+        setInterval(() => {
+            if(localStorage.getItem('kes_admin_active') === 'true') {
+                 const allOrders = JSON.parse(localStorage.getItem('kes_live_orders')) || [];
+                 allOrders.forEach(o => {
+                    const timerText = document.getElementById(`timer-text-${o.id}`);
+                    if(timerText && o.timerEnd && o.timerEnd > Date.now()) {
+                        let diffS = Math.floor((o.timerEnd - Date.now()) / 1000);
+                        let d = Math.floor(diffS / (24 * 3600));
+                        let h = Math.floor((diffS % (24 * 3600)) / 3600);
+                        let m = Math.floor((diffS % 3600) / 60);
+                        let s = diffS % 60;
+                        timerText.innerText = d > 0 ? `${d}d ${h}h` : `${m}m ${s}s`;
+                    }
+                 });
+            }
+        }, 1000); 
+
+/* =========================================
+   KES PROFESSIONAL NOTIFICATION SYSTEM
+   ========================================= */
+
+const notifyContainer = document.createElement('div');
+notifyContainer.id = 'kes-notification-container';
+document.body.appendChild(notifyContainer);
+
+window.alert = function(message) {
+    const toast = document.createElement('div');
+    toast.className = 'kes-toast';
+    
+    let icon = "🔔";
+    let title = "System Notification";
+    
+    if (message.toLowerCase().includes("success") || message.toLowerCase().includes("confirmed")) {
+        toast.classList.add('success');
+        icon = "✅";
+        title = "Action Successful";
+    } else if (message.toLowerCase().includes("failed") || message.toLowerCase().includes("denied") || message.toLowerCase().includes("error") || message.toLowerCase().includes("declined")) {
+        toast.classList.add('error');
+        icon = "❌";
+        title = "Security Alert";
+    }
+
+    toast.innerHTML = `
+        <div style="font-size: 24px;">${icon}</div>
+        <div class="kes-toast-content">
+            <div class="kes-toast-title">${title}</div>
+            <div class="kes-toast-msg">${message}</div>
+        </div>
+        <div class="kes-toast-close" onclick="this.parentElement.style.animation='kesFadeOut 0.4s forwards'; setTimeout(()=>this.parentElement.remove(), 400)">&times;</div>
+    `;
+
+    document.getElementById('kes-notification-container').appendChild(toast);
+
+    setTimeout(() => {
+        if (toast.parentElement) {
+            toast.style.animation = 'kesFadeOut 0.4s forwards';
+            setTimeout(() => toast.remove(), 400);
+        }
+    }, 5000);
+};
+
+const alertOverlay = document.createElement('div');
+alertOverlay.id = 'kes-custom-alert-overlay';
+alertOverlay.innerHTML = `
+    <div class="kes-alert-card">
+        <div class="kes-alert-body">
+            <span class="kes-alert-icon" id="kes-alert-icon">🔔</span>
+            <div class="kes-alert-msg" id="kes-alert-msg">Message goes here</div>
+            <input type="text" id="kes-alert-input" style="display:none;">
+        </div>
+        <div class="kes-alert-footer">
+            <button class="kes-alert-btn kes-btn-secondary" id="kes-alert-cancel" style="display:none;">Cancel</button>
+            <button class="kes-alert-btn kes-btn-primary" id="kes-alert-ok">OK</button>
+        </div>
+    </div>
+`;
+document.body.appendChild(alertOverlay);
+
+const msgEl = document.getElementById('kes-alert-msg');
+const iconEl = document.getElementById('kes-alert-icon');
+const inputEl = document.getElementById('kes-alert-input');
+const okBtn = document.getElementById('kes-alert-ok');
+const cancelBtn = document.getElementById('kes-alert-cancel');
+
+window.prompt = function(message, defaultValue = "") {
+    msgEl.innerText = message;
+    iconEl.innerText = "🔑";
+    inputEl.style.display = 'block';
+    inputEl.value = defaultValue;
+    inputEl.type = (message.toLowerCase().includes('password')) ? 'password' : 'text';
+    cancelBtn.style.display = 'block';
+    alertOverlay.style.display = 'flex';
+    inputEl.focus();
+
+    return new Promise(resolve => {
+        okBtn.onclick = () => {
+            alertOverlay.style.display = 'none';
+            resolve(inputEl.value);
+        };
+        cancelBtn.onclick = () => {
+            alertOverlay.style.display = 'none';
+            resolve(null);
+        };
+    });
+};
+
+    </script>
+</body>
+</html>
